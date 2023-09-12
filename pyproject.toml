@@ -5,7 +5,7 @@ description = "A client library for the ThreatX API"
 authors = ["Nikita Ratskov <nikita.ratskov@threatx.com>"]
 license = ""
 readme = "README.md"
-packages = [{include = "txapiclient"}]
+packages = [{include = "threatx_api_client"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"

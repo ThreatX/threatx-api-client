@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from txapiclient import TXAPIIncorrectEnvironment, Client, TXAPIIncorrectToken, TXAPIIncorrectCommand, \
+from threatx_api_client import TXAPIIncorrectEnvironment, Client, TXAPIIncorrectToken, TXAPIIncorrectCommand, \
     TXAPIResponseError
 
 

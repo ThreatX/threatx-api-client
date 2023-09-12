@@ -1,6 +1,6 @@
 import requests
 
-from txapiclient.exceptions import TXAPIIncorrectEnvironment, TXAPIIncorrectCommand, TXAPIResponseError, \
+from threatx_api_client.exceptions import TXAPIIncorrectEnvironment, TXAPIIncorrectCommand, TXAPIResponseError, \
     TXAPIIncorrectToken
 
 
