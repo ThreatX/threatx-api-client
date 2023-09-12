@@ -1,0 +1,48 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python application
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+  id-token: write
+  packages: write
+
+jobs:
+#  test:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Repo checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Prepare environment
+#        uses: "./.github/actions/environment"
+#
+#      - name: Running pytest
+#        run: poetry run pytest
+
+  build_linux:
+#    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare environment
+        uses: "./.github/actions/environment"
+
+      - name: Build wheel package
+        shell: bash
+        run: poetry build --format wheel
+
+      - name: Upload wheel package
+        uses: actions/upload-artifact@v3
+        with:
+          name: Python Wheel
+          path: ./dist/*.whl
