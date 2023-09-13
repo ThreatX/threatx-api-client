@@ -8,11 +8,13 @@ on:
     branches: [ "main" ]
     paths:
       - "threatx_api_client/**"
+      - "tests/**"
       - "./**.toml"
   pull_request:
     branches: [ "main" ]
     paths:
       - "threatx_api_client/**"
+      - "tests/**"
       - "./**.toml"
 
 permissions:
