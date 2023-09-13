@@ -1,3 +1,4 @@
+import os
 from unittest import TestCase
 
 from threatx_api_client import TXAPIIncorrectEnvironment, Client, TXAPIIncorrectToken, TXAPIIncorrectCommand, \
@@ -7,8 +8,8 @@ from threatx_api_client import TXAPIIncorrectEnvironment, Client, TXAPIIncorrect
 class TestClient(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.api_key_prod = ""
-        cls.api_key_pod = ""
+        cls.api_key_prod = os.environ.get('TX_API_PROD_KEY')
+        cls.api_key_pod = os.environ.get('TX_API_POD_KEY')
         cls.api_env = "prod"
 
     def test_incorrect_env(self):

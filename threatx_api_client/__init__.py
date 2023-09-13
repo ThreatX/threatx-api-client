@@ -22,7 +22,7 @@ class Client:
             case "prod":
                 return self.api_prod_host
             case _:
-                raise TXAPIIncorrectEnvironment("TX API ENV not found!")
+                raise TXAPIIncorrectEnvironment("TX API Env not found!")
 
     def __generate_api_link(self, api_ver: int):
         return f"{self.__get_api_env_host(self.api_env)}/{self.api_path}/v{api_ver}"
@@ -47,7 +47,7 @@ class Client:
         url = f"{self.__generate_api_link(1)}/login"
 
         if not self.api_key:
-            raise TXAPIIncorrectToken("Please provide TX API KEY.")
+            raise TXAPIIncorrectToken("Please provide TX API Key.")
 
         data = {"command": "login", "api_token": self.api_key}
 

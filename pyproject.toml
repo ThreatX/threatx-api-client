@@ -15,6 +15,18 @@ requests = "^2.31.0"
 ruff = "^0.0.288"
 coverage = "^7.3.1"
 
+[tool.poetry.group.release.dependencies]
+python-semantic-release = "^8.0.8"
+pytest = "^7.4.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.semantic_release]
+version_toml = [
+    "pyproject.toml:tool.poetry.version"
+]
+major_on_zero = false
+branch = "main"
+upload_to_vcs_release = true
