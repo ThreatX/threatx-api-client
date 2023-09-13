@@ -6,13 +6,18 @@ name: Python application
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "threatx_api_client/**"
+      - "./**.toml"
   pull_request:
     branches: [ "main" ]
+    paths:
+      - "threatx_api_client/**"
+      - "./**.toml"
 
 permissions:
   contents: write
   id-token: write
-  packages: write
 
 jobs:
   test:
