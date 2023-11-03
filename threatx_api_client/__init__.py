@@ -6,8 +6,13 @@ from threatx_api_client.exceptions import TXAPIIncorrectEnvironment, TXAPIIncorr
 
 class Client:
     def __init__(self, api_env, api_key):
-        self.api_pod_host = "https://provision-tx-us-east-2a.threatx.io"
-        self.api_prod_host = "https://provision.threatx.io"
+        self.host_parts = {
+            "prod": "",
+            "pod": "tx-us-east-2a",
+            "qa": "qa0",
+            "dev": "dev0",
+            "staging": "staging0"
+        }
         self.api_path = "tx_api"
 
         self.api_env = api_env
@@ -16,13 +21,13 @@ class Client:
         self.session_token = self.__login()
 
     def __get_api_env_host(self, api_env):
-        match api_env:
-            case "pod":
-                return self.api_pod_host
-            case "prod":
-                return self.api_prod_host
-            case _:
-                raise TXAPIIncorrectEnvironment("TX API Env not found!")
+        if api_env not in self.host_parts:
+            raise TXAPIIncorrectEnvironment(f"TX API Env '{api_env}' not found!")
+
+        part = (f"-{self.host_parts.get(api_env)}"
+                if self.host_parts.get(api_env) else "")
+
+        return f"https://provision{part}.threatx.io"
 
     def __generate_api_link(self, api_ver: int):
         return f"{self.__get_api_env_host(self.api_env)}/{self.api_path}/v{api_ver}"
