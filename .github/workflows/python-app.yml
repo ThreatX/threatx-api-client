@@ -43,6 +43,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     concurrency: release
+    permissions: write-all
     steps:
       - name: Repo checkout
         uses: actions/checkout@v4
