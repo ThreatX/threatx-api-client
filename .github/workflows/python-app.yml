@@ -7,12 +7,14 @@ on:
   push:
     branches: [ "main" ]
     paths:
+      - ".github/**"
       - "threatx_api_client/**"
       - "tests/**"
       - "./**.toml"
   pull_request:
     branches: [ "main" ]
     paths:
+      - ".github/**"
       - "threatx_api_client/**"
       - "tests/**"
       - "./**.toml"
@@ -43,7 +45,7 @@ jobs:
     concurrency: release
     steps:
       - name: Repo checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -54,7 +56,7 @@ jobs:
         shell: bash
         run: poetry build --format wheel
 
-      - name: Python Semantic Release
-        run: poetry run semantic-release publish
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: python
+          package-name: threatx-api-client
