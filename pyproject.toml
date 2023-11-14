@@ -19,6 +19,16 @@ coverage = "^7.3.1"
 python-semantic-release = "^8.0.8"
 pytest = "^7.4.2"
 
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.5.2"
+mkdocstrings = "^0.18.1"
+mkdocs-material = "^8.5.11"
+mkdocs-click = "^0.6.0"
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
