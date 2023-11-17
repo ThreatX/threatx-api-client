@@ -46,7 +46,11 @@ class Client:
         if response_data:
             return response_data
         else:
-            raise TXAPIResponseError(response.get("Error"))
+            if response.get("Error") == "Token Expired. Please re-authenticate.":
+                self.session_token = self.__login()
+                return self.__process_response(url, available_commands, payload)
+            else:
+                raise TXAPIResponseError(response.get("Error"))
 
     def __login(self):
         url = f"{self.__generate_api_link(1)}/login"
