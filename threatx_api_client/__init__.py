@@ -1,3 +1,5 @@
+"""ThreatX Python API Client"""
+
 import requests
 
 from threatx_api_client.exceptions import TXAPIIncorrectEnvironment, TXAPIIncorrectCommand, TXAPIResponseError, \
@@ -5,7 +7,22 @@ from threatx_api_client.exceptions import TXAPIIncorrectEnvironment, TXAPIIncorr
 
 
 class Client:
+    """Client class for ThreatX API
+
+    Attributes: 
+        host_parts: 
+        api_path: 
+        api_env: 
+        api_key: 
+        session_token: 
+    """
     def __init__(self, api_env, api_key):
+        """Initialize ThreatX API Client
+
+        Args:
+            api_env (): 
+            api_key (str):  ThreatX API Kley
+        """
         self.host_parts = {
             "prod": "",
             "pod": "tx-us-east-2a",
@@ -67,35 +84,83 @@ class Client:
         else:
             raise TXAPIIncorrectToken("TX API Token is not correct!")
 
-    def auth(self, payload):
+    def auth(self, payload: dict):
+        """Authorize user
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): responsed data
+
+        Raises:
+            (TXAPIIncorrectCommand): When command is not available
+            (TXAPIResponseError): When response is not OK
+            
+        """
         url = f"{self.__generate_api_link(1)}/auth"
 
         available_commands = ["authorize", "refresh", "issue_password_reset", "redeem_password_reset"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def auth_v2(self, payload):
+    def auth_v2(self, payload: dict):
+        """Authorize user v2
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+            
+        """
         url = f"{self.__generate_api_link(2)}/auth"
 
         available_commands = ["authorize", "refresh"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def api_keys(self, payload):
+    def api_keys(self, payload: dict):
+        """Manage API Keys
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+        """
         url = f"{self.__generate_api_link(2)}/apikeys"
 
         available_commands = ["list", "new", "update", "revoke"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def api_schemas(self, payload):
+    def api_schemas(self, payload: dict):
+        """API Schema Management
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+
+        """
         url = f"{self.__generate_api_link(1)}/apischemas"
 
         available_commands = ["save", "list", "delete"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def customers(self, payload):
+    def customers(self, payload:  dict):
+        """Customer management
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+            
+        """
         url = f"{self.__generate_api_link(1)}/customers"
 
         available_commands = [
@@ -107,13 +172,22 @@ class Client:
             "list_api_keys",
             "new_api_key",
             "delete_api_key",
-            "get_customer_config",  # TODO: confirm
-            "set_customer_config",  # TODO: confirm
+            "get_customer_config",  
+            "set_customer_config", 
         ]
 
         return self.__process_response(url, available_commands, payload)
 
-    def users(self, payload):
+    def users(self, payload:  dict):
+        """Manage users
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+
+        """
         url = f"{self.__generate_api_link(1)}/users"
 
         available_commands = [
@@ -122,47 +196,101 @@ class Client:
             "get",
             "update",
             "delete",
-            "get_api_key",  # TODO: confirm
+            "get_api_key",  
         ]
 
         return self.__process_response(url, available_commands, payload)
 
-    def sites(self, payload):
+    def sites(self, payload: dict):
+        """Manage sites
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): repsonse data
+            
+        """
         url = f"{self.__generate_api_link(2)}/sites"
 
         available_commands = ["list", "new", "get", "delete", "update", "unset"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def site_groups(self, payload):
+    def site_groups(self, payload:  dict):
+        """Manage site groups
+
+        Args:
+            payload (dict):
+
+        Returns:
+            (dict) : response data
+            
+        """
         url = f"{self.__generate_api_link(1)}/sitegroups"
 
         available_commands = ["list", "save", "delete"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def templates(self, payload):
+    def templates(self, payload:  dict):
+        """Manage NGinx Configuration Templates
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+
+        """
         url = f"{self.__generate_api_link(1)}/templates"
 
         available_commands = ["set", "get", "delete"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def sensors(self, payload):
+    def sensors(self, payload:  dict ):
+        """Manage sensors
+
+        Args:
+            payload (dcit): 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/sensors"
 
         available_commands = ["list", "tags"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def services(self, payload):
+    def services(self, payload: dict):
+        """Manage services
+
+        Args:
+            payload (): 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/services"
 
         available_commands = ["list"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def entities(self, payload):
+    def entities(self, payload: dict):
+        """Manage threatx entities
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+
+        """
         url = f"{self.__generate_api_link(1)}/entities"
 
         available_commands = [
@@ -183,7 +311,16 @@ class Client:
 
         return self.__process_response(url, available_commands, payload)
 
-    def metrics(self, payload):
+    def metrics(self, payload: dict):
+        """Manage metrics
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+            
+        """
         url = f"{self.__generate_api_link(1)}/metrics"
 
         available_commands = [
@@ -205,98 +342,225 @@ class Client:
 
         return self.__process_response(url, available_commands, payload)
 
-    def subscriptions(self, payload):
+    def subscriptions(self, payload: dict):
+        """ Manage subscriptions
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/subscriptions"
 
         available_commands = ["save", "delete", "list", "enable", "disable"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def list_whitelist(self, payload):
+    def list_whitelist(self, payload: dict):
+        """List whitelist
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/whitelist"
 
         available_commands = ["list"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def list_blacklist(self, payload):
+    def list_blacklist(self, payload: dict):
+        """List blacklist
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/blacklist"
 
         available_commands = ["list"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def list_blocklist(self, payload):
+    def list_blocklist(self, payload: dict):
+        """
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/blocklist"
 
         available_commands = ["list"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def list_mutelist(self, payload):
+    def list_mutelist(self, payload: dict):
+        """
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/mutelist"
 
         available_commands = ["list"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def list_ignorelist(self, payload):
+    def list_ignorelist(self, payload: dict):
+        """List ignorelist
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/ignorelist"
 
         available_commands = ["list"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def global_tags(self, payload):
+    def global_tags(self, payload: dict):
+        """Manage global tags
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/globaltags"
 
         available_commands = ["new", "list"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def actor_tags(self, payload):
+    def actor_tags(self, payload: dict):
+        """Manage actor tags
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/actortags"
 
         available_commands = ["new", "list", "delete"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def features(self, payload):
+    def features(self, payload: dict):
+        """Manage feature flags
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/features"
 
         available_commands = ["list", "query", "save", "delete"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def metrics_tech(self, payload):
+    def metrics_tech(self, payload: dict):
+        """MAanage metrics
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/metrics/tech"
 
         available_commands = ["list_endpoint_profiles", "list_site_profiles"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def channels(self, payload):
+    def channels(self, payload: dict):
+        """Manage channels
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/channels"
 
         available_commands = ["new", "list", "update"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def global_settings(self, payload):
+    def global_settings(self, payload: dict):
+        """Manage global settings
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/globalsettings"
 
         available_commands = ["get"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def dns_info(self, payload):
+    def dns_info(self, payload: dict):
+        """Manage DNS info
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/dnsinfo"
 
         available_commands = ["list"]
 
         return self.__process_response(url, available_commands, payload)
 
-    def logs(self, payload):
+    def logs(self, payload: dict):
+        """Manage logs
+
+        Args:
+            payload: 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/logs"
 
         available_commands = [
@@ -318,7 +582,7 @@ class Client:
 
         return self.__process_response(url, available_commands, payload)
 
-    def logs_v2(self, payload):
+    def logs_v2(self, payload: dict):
         url = f"{self.__generate_api_link(2)}/logs"
 
         available_commands = [
@@ -335,7 +599,16 @@ class Client:
 
         return self.__process_response(url, available_commands, payload)
 
-    def lists(self, payload):
+    def lists(self, payload: dict):
+        """List management
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/lists"
 
         available_commands = [
@@ -368,7 +641,16 @@ class Client:
 
         return self.__process_response(url, available_commands, payload)
 
-    def rules(self, payload):
+    def rules(self, payload: dict):
+        """Manage rules
+
+        Args:
+            payload (dict): 
+
+        Returns:
+            (dict): response data
+   
+        """
         url = f"{self.__generate_api_link(1)}/rules"
 
         available_commands = [

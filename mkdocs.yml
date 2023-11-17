@@ -1,0 +1,36 @@
+site_name: ThreatX Python API Client
+repo_name: threatx-api-client
+repo_url: https://github.com/ThreatX/threatx-api-client
+site_description: A git repository home to ThreatX's Python API client library
+site_author: Nikita Ratskov <nikita.ratskov@threatx.com>
+copyright: Copyright 2023 ThreatX, Inc. All Rights Reserved.
+docs_dir: docs
+site_dir: site
+
+nav:
+- Home: index.md
+- API Reference: api.md
+
+
+markdown_extensions: 
+  - smarty: {}
+  - toc:
+      permalink: true
+
+
+plugins:
+  - search:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          rendering:
+            show_source: true
+
+theme:
+  name: mkdocs
+  locale: en
+  highlightjs: true
+
+extra_css: 
+  - style.css
