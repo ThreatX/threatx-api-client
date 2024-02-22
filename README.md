@@ -4,6 +4,7 @@
 ## Contents
 - [Description](#description)
 - [Setup](#setup)
+- [Usage](#usage)
 
 ## Description
 ThreatX API Client is lightweight Python library designed to streamline the
