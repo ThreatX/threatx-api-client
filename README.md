@@ -23,7 +23,7 @@ interaction with ThreatX API.
 
 ## Usage
 ### Initial setup
-1. Import class `Client` class: `from threatx_api_client import Client`
+1. Import class `Client`: `from threatx_api_client import Client`
 2. Initialize class object with required environment and API key provided: `tx_api = Client(api_env, api_key)`
    Available environments:
     - `prod`
