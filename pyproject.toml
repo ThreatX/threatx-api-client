@@ -30,3 +30,26 @@ version_toml = [
 major_on_zero = false
 branch = "main"
 upload_to_vcs_release = true
+
+[tool.ruff]
+src = ["threatx_api_client", "tests"]
+select = [
+    "F",
+    "E",
+    "W",
+    "C90",
+    "I",
+    "N",
+    "D",
+    "PERF",
+    "PL",
+    "FURB",
+    "RUF",
+    "UP"
+]
+
+[tool.ruff.isort]
+known-first-party = ["txsensorops"]
+
+[tool.ruff.pydocstyle]
+convention = "google"

@@ -1,11 +1,17 @@
 import requests
 
-from threatx_api_client.exceptions import TXAPIIncorrectEnvironment, TXAPIIncorrectCommand, TXAPIResponseError, \
-    TXAPIIncorrectToken
+from threatx_api_client.exceptions import (
+    TXAPIIncorrectCommandError,
+    TXAPIIncorrectEnvironmentError,
+    TXAPIIncorrectTokenError,
+    TXAPIResponseError,
+)
 
 
 class Client:
+    """Main API Client class."""
     def __init__(self, api_env, api_key):
+        """Main Client class initializer."""
         self.host_parts = {
             "prod": "",
             "pod": "tx-us-east-2a",
@@ -22,7 +28,7 @@ class Client:
 
     def __get_api_env_host(self, api_env):
         if api_env not in self.host_parts:
-            raise TXAPIIncorrectEnvironment(f"TX API Env '{api_env}' not found!")
+            raise TXAPIIncorrectEnvironmentError(f"TX API Env '{api_env}' not found!")
 
         part = (f"-{self.host_parts.get(api_env)}"
                 if self.host_parts.get(api_env) else "")
@@ -36,7 +42,7 @@ class Client:
         payload_command = payload.get("command")
 
         if payload_command not in available_commands:
-            raise TXAPIIncorrectCommand(payload_command)
+            raise TXAPIIncorrectCommandError(payload_command)
 
         auth = {"token": self.session_token}
         response: dict = requests.post(url, json={**auth, **payload}).json()
@@ -45,18 +51,18 @@ class Client:
 
         if response_data:
             return response_data
+
+        if response.get("Error") == "Token Expired. Please re-authenticate.":
+            self.session_token = self.__login()
+            return self.__process_response(url, available_commands, payload)
         else:
-            if response.get("Error") == "Token Expired. Please re-authenticate.":
-                self.session_token = self.__login()
-                return self.__process_response(url, available_commands, payload)
-            else:
-                raise TXAPIResponseError(response.get("Error"))
+            raise TXAPIResponseError(response.get("Error"))
 
     def __login(self):
         url = f"{self.__generate_api_link(1)}/login"
 
         if not self.api_key:
-            raise TXAPIIncorrectToken("Please provide TX API Key.")
+            raise TXAPIIncorrectTokenError("Please provide TX API Key.")
 
         data = {"command": "login", "api_token": self.api_key}
 
@@ -65,23 +71,31 @@ class Client:
         if response:
             return response
         else:
-            raise TXAPIIncorrectToken("TX API Token is not correct!")
+            raise TXAPIIncorrectTokenError("TX API Token is not correct!")
 
-    def auth(self, payload):
-        url = f"{self.__generate_api_link(1)}/auth"
+    # TODO: Remove this?
+    # def auth(self, payload):
+    #     url = f"{self.__generate_api_link(1)}/auth"
+    #
+    #     available_commands = ["authorize", "refresh", "issue_password_reset", "redeem_password_reset"]
+    #
+    #     return self.__process_response(url, available_commands, payload)
+    #
+    # def auth_v2(self, payload):
+    #     url = f"{self.__generate_api_link(2)}/auth"
+    #
+    #     available_commands = ["authorize", "refresh"]
+    #
+    #     return self.__process_response(url, available_commands, payload)
 
-        available_commands = ["authorize", "refresh", "issue_password_reset", "redeem_password_reset"]
+    def api_keys(self, payload: dict):
+        """API Keys management.
 
-        return self.__process_response(url, available_commands, payload)
-
-    def auth_v2(self, payload):
-        url = f"{self.__generate_api_link(2)}/auth"
-
-        available_commands = ["authorize", "refresh"]
-
-        return self.__process_response(url, available_commands, payload)
-
-    def api_keys(self, payload):
+        Method allows to manage API keys, allowing authorized users to
+        create (and revoke) keys granting automated access to the ThreatX API.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(2)}/apikeys"
 
         available_commands = ["list", "new", "update", "revoke"]
@@ -89,6 +103,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def api_schemas(self, payload):
+        """API schemas management.
+
+        Method allows to manage API schemas.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/apischemas"
 
         available_commands = ["save", "list", "delete"]
@@ -96,6 +116,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def customers(self, payload):
+        """Customers management.
+
+        Method allows to create, manage and remove customers.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/customers"
 
         available_commands = [
@@ -114,6 +140,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def users(self, payload):
+        """Users management.
+
+        Method allows to create, manage and remove users.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/users"
 
         available_commands = [
@@ -128,6 +160,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def sites(self, payload):
+        """Sites management.
+
+        Method allows to create, manage and remove sites.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(2)}/sites"
 
         available_commands = ["list", "new", "get", "delete", "update", "unset"]
@@ -135,6 +173,13 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def site_groups(self, payload):
+        """Site groups management.
+
+        Method allows to create, manage and remove site groups.
+        Site groups provide access control features similar to UNIX user groups, restricting access to ThreatX sites.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/sitegroups"
 
         available_commands = ["list", "save", "delete"]
@@ -142,6 +187,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def templates(self, payload):
+        """Templates management.
+
+        Method allows to create, manage and remove customer templates.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/templates"
 
         available_commands = ["set", "get", "delete"]
@@ -149,6 +200,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def sensors(self, payload):
+        """Sensors information.
+
+        Method provides information of on-premises deployed sensors and sensor metadata.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/sensors"
 
         available_commands = ["list", "tags"]
@@ -156,6 +213,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def services(self, payload):
+        """Services information.
+
+        Method provides information on ThreatX system services and their public IP addresses.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/services"
 
         available_commands = ["list"]
@@ -163,6 +226,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def entities(self, payload):
+        """Entities management.
+
+        Method allows to list and manage entities.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/entities"
 
         available_commands = [
@@ -184,6 +253,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def metrics(self, payload):
+        """Statistical metrics.
+
+        Method provides statistical metrics on ThreatX system operations.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/metrics"
 
         available_commands = [
@@ -206,6 +281,14 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def subscriptions(self, payload):
+        """Subscriptions management.
+
+        Method allows to configure customer notification subscriptions.
+        Subscriptions are used to receive notifications related to ThreatX events, delivered either via email,
+        webhook, or through a log emitter communicating directly to an analyzer.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/subscriptions"
 
         available_commands = ["save", "delete", "list", "enable", "disable"]
@@ -213,6 +296,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def list_whitelist(self, payload):
+        """Get whitelist IPs.
+
+        Method allows to get customer whitelisted IPs.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/whitelist"
 
         available_commands = ["list"]
@@ -220,6 +309,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def list_blacklist(self, payload):
+        """Get blacklist IPs.
+
+        Method allows to get customer blacklisted IPs.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/blacklist"
 
         available_commands = ["list"]
@@ -227,6 +322,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def list_blocklist(self, payload):
+        """Get blocklisted IPs.
+
+        Method allows to get customer blocked IPs.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/blocklist"
 
         available_commands = ["list"]
@@ -234,6 +335,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def list_mutelist(self, payload):
+        """Get mutelisted IPs.
+
+        Method allows to get customer mutelisted IPs.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/mutelist"
 
         available_commands = ["list"]
@@ -241,6 +348,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def list_ignorelist(self, payload):
+        """Get ignorelisted IPs.
+
+        Method allows to get customer ignorelisted IPs.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/ignorelist"
 
         available_commands = ["list"]
@@ -248,6 +361,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def global_tags(self, payload):
+        """Global tags management.
+
+        Method allows to create new and provides information of global tags available for use.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/globaltags"
 
         available_commands = ["new", "list"]
@@ -255,6 +374,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def actor_tags(self, payload):
+        """Actor tags management.
+
+        Method allows to create, manage and remove actor tags.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/actortags"
 
         available_commands = ["new", "list", "delete"]
@@ -269,6 +394,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def metrics_tech(self, payload):
+        """API Profiler information.
+
+        Method provides information of customer API Profiler.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/metrics/tech"
 
         available_commands = ["list_endpoint_profiles", "list_site_profiles"]
@@ -276,6 +407,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def channels(self, payload):
+        """Channels management.
+
+        Method allows to create, manage and remove customer channels.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/channels"
 
         available_commands = ["new", "list", "update"]
@@ -283,6 +420,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def global_settings(self, payload):
+        """Customer-wide settings.
+
+        Method allows to get default customer-wide settings applied.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/globalsettings"
 
         available_commands = ["get"]
@@ -297,6 +440,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def logs(self, payload):
+        """Customer logs.
+
+        Method allows to get customer logs including audit logs, match events, etc.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/logs"
 
         available_commands = [
@@ -319,6 +468,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def logs_v2(self, payload):
+        """Customer logs.
+
+        Method allows to get customer logs including block, match and audit events.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(2)}/logs"
 
         available_commands = [
@@ -336,6 +491,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def lists(self, payload):
+        """Lists management.
+
+        Method allows to manage IP addresses within black, block and whitelists.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/lists"
 
         available_commands = [
@@ -369,6 +530,12 @@ class Client:
         return self.__process_response(url, available_commands, payload)
 
     def rules(self, payload):
+        """Rules management.
+
+        Method allows to create, manage and remove customer rules.
+        :param dict payload: API payload containing main command and additional parameters.
+        :return:
+        """
         url = f"{self.__generate_api_link(1)}/rules"
 
         available_commands = [

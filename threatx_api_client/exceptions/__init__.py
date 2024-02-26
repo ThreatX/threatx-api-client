@@ -1,18 +1,23 @@
-class TXAPIException(Exception):
+class TXAPIError(Exception):
+    """Common TX API Client exception class."""
     pass
 
 
-class TXAPIIncorrectEnvironment(TXAPIException):
+class TXAPIIncorrectEnvironmentError(TXAPIError):
+    """TX API Client exception class for incorrect environment provided."""
     pass
 
 
-class TXAPIIncorrectToken(TXAPIException):
+class TXAPIIncorrectTokenError(TXAPIError):
+    """TX API Client exception class for incorrect API token provided."""
     pass
 
 
-class TXAPIIncorrectCommand(TXAPIException):
+class TXAPIIncorrectCommandError(TXAPIError):
+    """TX API Client exception class for incorrect command provided."""
     pass
 
 
-class TXAPIResponseError(TXAPIException):
+class TXAPIResponseError(TXAPIError):
+    """TX API Client response error exception class."""
     pass
