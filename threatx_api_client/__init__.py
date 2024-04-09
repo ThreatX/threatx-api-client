@@ -6,10 +6,13 @@ from threatx_api_client.exceptions import (
     TXAPIIncorrectTokenError,
     TXAPIResponseError,
 )
+import aiohttp
+import asyncio
 
 
 class Client:
     """Main API Client class."""
+
     def __init__(self, api_env, api_key):
         """Main Client class initializer."""
         self.host_parts = {
@@ -24,42 +27,74 @@ class Client:
         self.api_env = api_env
         self.api_key = api_key
 
+        self.http_connector = aiohttp.TCPConnector(limit_per_host=100, limit=0, ttl_dns_cache=300)
+        self.parallel_requests = 10
+
         self.session_token = self.__login()
 
-    def __get_api_env_host(self, api_env):
-        if api_env not in self.host_parts:
-            raise TXAPIIncorrectEnvironmentError(f"TX API Env '{api_env}' not found!")
+    def __get_api_env_host(self):
+        if self.api_env not in self.host_parts:
+            raise TXAPIIncorrectEnvironmentError(f"TX API Env '{self.api_env}' not found!")
 
-        part = (f"-{self.host_parts.get(api_env)}"
-                if self.host_parts.get(api_env) else "")
+        part = (f"-{self.host_parts.get(self.api_env)}"
+                if self.host_parts.get(self.api_env) else "")
 
         return f"https://provision{part}.threatx.io"
 
     def __generate_api_link(self, api_ver: int):
-        return f"{self.__get_api_env_host(self.api_env)}/{self.api_path}/v{api_ver}"
+        return f"/{self.api_path}/v{api_ver}"
 
-    def __process_response(self, url: str, available_commands: list, payload: dict):
-        payload_command = payload.get("command")
+    # async def post(self, url: str, available_commands, post_payload: dict):
+    #     if post_payload.get("command") not in available_commands:
+    #         raise TXAPIIncorrectCommandError(post_payload.get("command"))
+    #
+    #     async with asyncio.Semaphore(self.parallel_requests):
+    #         async with self.http_session.post(url, json={"token": self.session_token, **post_payload}) as response:
+    #             response_data = await response.json()
+    #
+    #             if response_data:
+    #                 result_responses.append(response_data)
+    #
+    #             if response_data.get("Error") == "Token Expired. Please re-authenticate.":
+    #                 self.session_token = self.__login()
+    #                 return self.__process_response(url, available_commands, post_payload)
+    #             else:
+    #                 raise TXAPIResponseError(response_data.get("Error"))
 
-        if payload_command not in available_commands:
-            raise TXAPIIncorrectCommandError(payload_command)
+    async def __process_response(self, url: str, available_commands: list, payloads):
+        http_session = aiohttp.ClientSession(
+            base_url=self.__get_api_env_host(),
+            connector=self.http_connector
+        )
+        semaphore = asyncio.Semaphore(self.parallel_requests)
+        responses = []
 
-        auth = {"token": self.session_token}
-        response: dict = requests.post(url, json={**auth, **payload}).json()
+        async def post(post_payload: dict):
+            if post_payload.get("command") not in available_commands:
+                raise TXAPIIncorrectCommandError(post_payload.get("command"))
 
-        response_data = response.get("Ok")
+            async with semaphore:
+                async with http_session.post(url, json={"token": self.session_token, **post_payload}) as raw_response:
+                    response = await raw_response.json()
+                    response_ok_data = response.get("Ok")
+                    response_error_data = response.get("Error")
 
-        if response_data:
-            return response_data
+                    if response_ok_data:
+                        responses.append(response_ok_data)
+                        return None
 
-        if response.get("Error") == "Token Expired. Please re-authenticate.":
-            self.session_token = self.__login()
-            return self.__process_response(url, available_commands, payload)
-        else:
-            raise TXAPIResponseError(response.get("Error"))
+                    if response_error_data == "Token Expired. Please re-authenticate.":
+                        self.session_token = self.__login()
+                        return post(post_payload)
+                    else:
+                        raise TXAPIResponseError(response_error_data)
+
+        await asyncio.gather(*(post(payload) for payload in payloads))
+        await http_session.close()
+        return responses
 
     def __login(self):
-        url = f"{self.__generate_api_link(1)}/login"
+        url = f"{self.__get_api_env_host()}{self.__generate_api_link(1)}/login"
 
         if not self.api_key:
             raise TXAPIIncorrectTokenError("Please provide TX API Key.")
@@ -308,7 +343,7 @@ class Client:
 
         return self.__process_response(url, available_commands, payload)
 
-    def list_blacklist(self, payload):
+    def list_blacklist(self, payloads):
         """Get blacklist IPs.
 
         Method allows to get customer blacklisted IPs.
@@ -319,7 +354,10 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(self.__process_response(url, available_commands, payloads))
+        self.http_connector.close()
+        return results
 
     def list_blocklist(self, payload):
         """Get blocklisted IPs.
