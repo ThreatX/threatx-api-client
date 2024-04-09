@@ -43,11 +43,6 @@ class Client:
     def __generate_api_link(self, api_ver: int):
         return f"/{self.api_path}/v{api_ver}"
 
-    def __init_http_session(self):
-        self.http_session = aiohttp.ClientSession(
-            base_url=self.__get_api_env_host()
-        )
-
     async def __post(self, session, path: str, post_payload: dict):
         async with asyncio.Semaphore(self.parallel_requests):
             async with session.post(path, json=post_payload) as raw_response:
