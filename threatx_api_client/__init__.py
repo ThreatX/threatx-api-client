@@ -29,6 +29,8 @@ class Client:
 
         self.parallel_requests = 10
 
+        self.base_url = self.__get_api_env_host()
+
         self.session_token = self.__get_session_token()
 
     def __get_api_env_host(self):
@@ -46,7 +48,7 @@ class Client:
     async def __post(self, session, path: str, post_payload: dict):
         async with asyncio.Semaphore(self.parallel_requests):
             async with session.post(path, json=post_payload) as raw_response:
-                response = await raw_response.json()
+                response = await raw_response.json(content_type=None)
                 response_ok_data = response.get("Ok")
                 response_error_data = response.get("Error")
 
@@ -60,17 +62,23 @@ class Client:
                     raise TXAPIResponseError(response_error_data)
 
     async def __process_response(self, path: str, available_commands: list, payloads):
+        if isinstance(payloads, dict):
+            payloads = [payloads]
+
         for payload in payloads:
             if payload.get("command") not in available_commands:
                 raise TXAPIIncorrectCommandError(payload.get("command"))
 
-        async with aiohttp.ClientSession(base_url=self.__get_api_env_host()) as session:
+        async with aiohttp.ClientSession(base_url=self.base_url) as session:
             responses = await asyncio.gather(*(
                 self.__post(
                     session,
                     path,
                     {"token": self.session_token, **payload}) for payload in payloads
             ))
+
+        if len(responses) == 1:
+            return responses[0]
 
         return responses
 
@@ -80,7 +88,7 @@ class Client:
         if not self.api_key:
             raise TXAPIIncorrectTokenError("Please provide TX API Key.")
 
-        async with aiohttp.ClientSession(base_url=self.__get_api_env_host()) as session:
+        async with aiohttp.ClientSession(base_url=self.base_url) as session:
             response = await asyncio.gather(
                 self.__post(
                     session,
@@ -88,7 +96,13 @@ class Client:
                     {"command": "login", "api_token": self.api_key}
                 )
             )
-        return response[0]["token"]
+
+        token_value = response[0]["token"]
+
+        if not token_value:
+            raise TXAPIIncorrectTokenError("TX API Token is not correct!")
+
+        return token_value
 
     def __get_session_token(self):
         loop = asyncio.get_event_loop()
@@ -110,7 +124,7 @@ class Client:
     #
     #     return self.__process_response(url, available_commands, payload)
 
-    def api_keys(self, payload: dict):
+    def api_keys(self, payloads):
         """API Keys management.
 
         Method allows to manage API keys, allowing authorized users to
@@ -122,9 +136,13 @@ class Client:
 
         available_commands = ["list", "new", "update", "revoke"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def api_schemas(self, payload):
+    def api_schemas(self, payloads):
         """API schemas management.
 
         Method allows to manage API schemas.
@@ -135,9 +153,13 @@ class Client:
 
         available_commands = ["save", "list", "delete"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def customers(self, payload):
+    def customers(self, payloads):
         """Customers management.
 
         Method allows to create, manage and remove customers.
@@ -159,9 +181,13 @@ class Client:
             "set_customer_config",  # TODO: confirm
         ]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def users(self, payload):
+    def users(self, payloads):
         """Users management.
 
         Method allows to create, manage and remove users.
@@ -179,9 +205,13 @@ class Client:
             "get_api_key",  # TODO: confirm
         ]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def sites(self, payload):
+    def sites(self, payloads):
         """Sites management.
 
         Method allows to create, manage and remove sites.
@@ -192,9 +222,13 @@ class Client:
 
         available_commands = ["list", "new", "get", "delete", "update", "unset"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def site_groups(self, payload):
+    def site_groups(self, payloads):
         """Site groups management.
 
         Method allows to create, manage and remove site groups.
@@ -206,9 +240,13 @@ class Client:
 
         available_commands = ["list", "save", "delete"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def templates(self, payload):
+    def templates(self, payloads):
         """Templates management.
 
         Method allows to create, manage and remove customer templates.
@@ -219,9 +257,13 @@ class Client:
 
         available_commands = ["set", "get", "delete"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def sensors(self, payload):
+    def sensors(self, payloads):
         """Sensors information.
 
         Method provides information of on-premises deployed sensors and sensor metadata.
@@ -232,9 +274,13 @@ class Client:
 
         available_commands = ["list", "tags"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def services(self, payload):
+    def services(self, payloads):
         """Services information.
 
         Method provides information on ThreatX system services and their public IP addresses.
@@ -245,9 +291,13 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def entities(self, payload):
+    def entities(self, payloads):
         """Entities management.
 
         Method allows to list and manage entities.
@@ -272,9 +322,13 @@ class Client:
             "count"
         ]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def metrics(self, payload):
+    def metrics(self, payloads):
         """Statistical metrics.
 
         Method provides statistical metrics on ThreatX system operations.
@@ -300,9 +354,13 @@ class Client:
             "request_stats_hourly_by_endpoint"
         ]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def subscriptions(self, payload):
+    def subscriptions(self, payloads):
         """Subscriptions management.
 
         Method allows to configure customer notification subscriptions.
@@ -315,9 +373,13 @@ class Client:
 
         available_commands = ["save", "delete", "list", "enable", "disable"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def list_whitelist(self, payload):
+    def list_whitelist(self, payloads):
         """Get whitelist IPs.
 
         Method allows to get customer whitelisted IPs.
@@ -328,7 +390,11 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
     def list_blacklist(self, payloads):
         """Get blacklist IPs.
@@ -342,10 +408,12 @@ class Client:
         available_commands = ["list"]
 
         loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(self.__process_response(url, available_commands, payloads))
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
         return results
 
-    def list_blocklist(self, payload):
+    def list_blocklist(self, payloads):
         """Get blocklisted IPs.
 
         Method allows to get customer blocked IPs.
@@ -356,9 +424,13 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def list_mutelist(self, payload):
+    def list_mutelist(self, payloads):
         """Get mutelisted IPs.
 
         Method allows to get customer mutelisted IPs.
@@ -369,9 +441,13 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def list_ignorelist(self, payload):
+    def list_ignorelist(self, payloads):
         """Get ignorelisted IPs.
 
         Method allows to get customer ignorelisted IPs.
@@ -382,9 +458,13 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def global_tags(self, payload):
+    def global_tags(self, payloads):
         """Global tags management.
 
         Method allows to create new and provides information of global tags available for use.
@@ -395,9 +475,13 @@ class Client:
 
         available_commands = ["new", "list"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def actor_tags(self, payload):
+    def actor_tags(self, payloads):
         """Actor tags management.
 
         Method allows to create, manage and remove actor tags.
@@ -408,16 +492,24 @@ class Client:
 
         available_commands = ["new", "list", "delete"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def features(self, payload):
+    def features(self, payloads):
         url = f"{self.__generate_api_link(1)}/features"
 
         available_commands = ["list", "query", "save", "delete"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def metrics_tech(self, payload):
+    def metrics_tech(self, payloads):
         """API Profiler information.
 
         Method provides information of customer API Profiler.
@@ -428,9 +520,13 @@ class Client:
 
         available_commands = ["list_endpoint_profiles", "list_site_profiles"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def channels(self, payload):
+    def channels(self, payloads):
         """Channels management.
 
         Method allows to create, manage and remove customer channels.
@@ -441,9 +537,13 @@ class Client:
 
         available_commands = ["new", "list", "update"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def global_settings(self, payload):
+    def global_settings(self, payloads):
         """Customer-wide settings.
 
         Method allows to get default customer-wide settings applied.
@@ -454,16 +554,24 @@ class Client:
 
         available_commands = ["get"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def dns_info(self, payload):
+    def dns_info(self, payloads):
         url = f"{self.__generate_api_link(1)}/dnsinfo"
 
         available_commands = ["list"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def logs(self, payload):
+    def logs(self, payloads):
         """Customer logs.
 
         Method allows to get customer logs including audit logs, match events, etc.
@@ -489,9 +597,13 @@ class Client:
         #     for log in response:
         #         log["customer"] = payload["customer_name"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def logs_v2(self, payload):
+    def logs_v2(self, payloads):
         """Customer logs.
 
         Method allows to get customer logs including block, match and audit events.
@@ -512,9 +624,13 @@ class Client:
         #     for log in response:
         #         log["customer"] = payload["customer_name"]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def lists(self, payload):
+    def lists(self, payloads):
         """Lists management.
 
         Method allows to manage IP addresses within black, block and whitelists.
@@ -551,9 +667,13 @@ class Client:
             "ip_to_link",
         ]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
 
-    def rules(self, payload):
+    def rules(self, payloads):
         """Rules management.
 
         Method allows to create, manage and remove customer rules.
@@ -585,4 +705,8 @@ class Client:
             "validate_rule"
         ]
 
-        return self.__process_response(url, available_commands, payload)
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return results
