@@ -1,4 +1,6 @@
-import requests
+import asyncio
+
+import aiohttp
 
 from threatx_api_client.exceptions import (
     TXAPIIncorrectCommandError,
@@ -6,8 +8,6 @@ from threatx_api_client.exceptions import (
     TXAPIIncorrectTokenError,
     TXAPIResponseError,
 )
-import aiohttp
-import asyncio
 
 
 class Client:
@@ -27,10 +27,9 @@ class Client:
         self.api_env = api_env
         self.api_key = api_key
 
-        self.http_connector = aiohttp.TCPConnector(limit_per_host=100, limit=0, ttl_dns_cache=300)
         self.parallel_requests = 10
 
-        self.session_token = self.__login()
+        self.session_token = self.__get_session_token()
 
     def __get_api_env_host(self):
         if self.api_env not in self.host_parts:
@@ -44,69 +43,62 @@ class Client:
     def __generate_api_link(self, api_ver: int):
         return f"/{self.api_path}/v{api_ver}"
 
-    # async def post(self, url: str, available_commands, post_payload: dict):
-    #     if post_payload.get("command") not in available_commands:
-    #         raise TXAPIIncorrectCommandError(post_payload.get("command"))
-    #
-    #     async with asyncio.Semaphore(self.parallel_requests):
-    #         async with self.http_session.post(url, json={"token": self.session_token, **post_payload}) as response:
-    #             response_data = await response.json()
-    #
-    #             if response_data:
-    #                 result_responses.append(response_data)
-    #
-    #             if response_data.get("Error") == "Token Expired. Please re-authenticate.":
-    #                 self.session_token = self.__login()
-    #                 return self.__process_response(url, available_commands, post_payload)
-    #             else:
-    #                 raise TXAPIResponseError(response_data.get("Error"))
-
-    async def __process_response(self, url: str, available_commands: list, payloads):
-        http_session = aiohttp.ClientSession(
-            base_url=self.__get_api_env_host(),
-            connector=self.http_connector
+    def __init_http_session(self):
+        self.http_session = aiohttp.ClientSession(
+            base_url=self.__get_api_env_host()
         )
-        semaphore = asyncio.Semaphore(self.parallel_requests)
-        responses = []
 
-        async def post(post_payload: dict):
-            if post_payload.get("command") not in available_commands:
-                raise TXAPIIncorrectCommandError(post_payload.get("command"))
+    async def __post(self, session, path: str, post_payload: dict):
+        async with asyncio.Semaphore(self.parallel_requests):
+            async with session.post(path, json=post_payload) as raw_response:
+                response = await raw_response.json()
+                response_ok_data = response.get("Ok")
+                response_error_data = response.get("Error")
 
-            async with semaphore:
-                async with http_session.post(url, json={"token": self.session_token, **post_payload}) as raw_response:
-                    response = await raw_response.json()
-                    response_ok_data = response.get("Ok")
-                    response_error_data = response.get("Error")
+                if response_ok_data:
+                    return response_ok_data
 
-                    if response_ok_data:
-                        responses.append(response_ok_data)
-                        return None
+                if response_error_data == "Token Expired. Please re-authenticate.":
+                    self.session_token = self.__get_session_token()
+                    return self.__post(session, path, post_payload)
+                else:
+                    raise TXAPIResponseError(response_error_data)
 
-                    if response_error_data == "Token Expired. Please re-authenticate.":
-                        self.session_token = self.__login()
-                        return post(post_payload)
-                    else:
-                        raise TXAPIResponseError(response_error_data)
+    async def __process_response(self, path: str, available_commands: list, payloads):
+        for payload in payloads:
+            if payload.get("command") not in available_commands:
+                raise TXAPIIncorrectCommandError(payload.get("command"))
 
-        await asyncio.gather(*(post(payload) for payload in payloads))
-        await http_session.close()
+        async with aiohttp.ClientSession(base_url=self.__get_api_env_host()) as session:
+            responses = await asyncio.gather(*(
+                self.__post(
+                    session,
+                    path,
+                    {"token": self.session_token, **payload}) for payload in payloads
+            ))
+
         return responses
 
-    def __login(self):
-        url = f"{self.__get_api_env_host()}{self.__generate_api_link(1)}/login"
+    async def __login(self):
+        path = f"{self.__generate_api_link(1)}/login"
 
         if not self.api_key:
             raise TXAPIIncorrectTokenError("Please provide TX API Key.")
 
-        data = {"command": "login", "api_token": self.api_key}
+        async with aiohttp.ClientSession(base_url=self.__get_api_env_host()) as session:
+            response = await asyncio.gather(
+                self.__post(
+                    session,
+                    path,
+                    {"command": "login", "api_token": self.api_key}
+                )
+            )
+        return response[0]["token"]
 
-        response = requests.post(url, json=data).json()["Ok"]["token"]
-
-        if response:
-            return response
-        else:
-            raise TXAPIIncorrectTokenError("TX API Token is not correct!")
+    def __get_session_token(self):
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(self.__login())
+        return results
 
     # TODO: Remove this?
     # def auth(self, payload):
@@ -356,7 +348,6 @@ class Client:
 
         loop = asyncio.get_event_loop()
         results = loop.run_until_complete(self.__process_response(url, available_commands, payloads))
-        self.http_connector.close()
         return results
 
     def list_blocklist(self, payload):
