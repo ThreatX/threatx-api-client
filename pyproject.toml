@@ -40,7 +40,7 @@ select = [
     "C90",
     "I",
     "N",
-#    "D",
+    "D",
     "PERF",
     "PL",
     "FURB",

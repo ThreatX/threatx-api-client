@@ -35,7 +35,9 @@ class Client:
 
     def __get_api_env_host(self):
         if self.api_env not in self.host_parts:
-            raise TXAPIIncorrectEnvironmentError(f"TX API Env '{self.api_env}' not found!")
+            raise TXAPIIncorrectEnvironmentError(
+                f"TX API Env '{self.api_env}' not found!"
+            )
 
         part = (f"-{self.host_parts.get(self.api_env)}"
                 if self.host_parts.get(self.api_env) else "")
@@ -124,47 +126,52 @@ class Client:
     #
     #     return self.__process_response(url, available_commands, payload)
 
+    def __run_async_processing(self, url, available_commands, payloads):
+        async_loop = asyncio.get_event_loop()
+        responses = async_loop.run_until_complete(
+            self.__process_response(url, available_commands, payloads)
+        )
+        return responses
+
     def api_keys(self, payloads):
         """API Keys management.
 
         Method allows to manage API keys, allowing authorized users to
         create (and revoke) keys granting automated access to the ThreatX API.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(2)}/apikeys"
 
         available_commands = ["list", "new", "update", "revoke"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def api_schemas(self, payloads):
         """API schemas management.
 
         Method allows to manage API schemas.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/apischemas"
 
         available_commands = ["save", "list", "delete"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def customers(self, payloads):
         """Customers management.
 
         Method allows to create, manage and remove customers.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/customers"
 
@@ -181,18 +188,16 @@ class Client:
             "set_customer_config",  # TODO: confirm
         ]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def users(self, payloads):
         """Users management.
 
         Method allows to create, manage and remove users.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/users"
 
@@ -205,104 +210,94 @@ class Client:
             "get_api_key",  # TODO: confirm
         ]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def sites(self, payloads):
         """Sites management.
 
         Method allows to create, manage and remove sites.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(2)}/sites"
 
         available_commands = ["list", "new", "get", "delete", "update", "unset"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def site_groups(self, payloads):
         """Site groups management.
 
         Method allows to create, manage and remove site groups.
-        Site groups provide access control features similar to UNIX user groups, restricting access to ThreatX sites.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        Site groups provide access control features similar to UNIX user groups,
+        restricting access to ThreatX sites.
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/sitegroups"
 
         available_commands = ["list", "save", "delete"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def templates(self, payloads):
         """Templates management.
 
         Method allows to create, manage and remove customer templates.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/templates"
 
         available_commands = ["set", "get", "delete"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def sensors(self, payloads):
         """Sensors information.
 
         Method provides information of on-premises deployed sensors and sensor metadata.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/sensors"
 
         available_commands = ["list", "tags"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def services(self, payloads):
         """Services information.
 
-        Method provides information on ThreatX system services and their public IP addresses.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        Method provides information on ThreatX system services
+        and their public IP addresses.
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/services"
 
         available_commands = ["list"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def entities(self, payloads):
         """Entities management.
 
         Method allows to list and manage entities.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/entities"
 
@@ -322,18 +317,16 @@ class Client:
             "count"
         ]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def metrics(self, payloads):
         """Statistical metrics.
 
         Method provides statistical metrics on ThreatX system operations.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/metrics"
 
@@ -354,229 +347,200 @@ class Client:
             "request_stats_hourly_by_endpoint"
         ]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def subscriptions(self, payloads):
         """Subscriptions management.
 
         Method allows to configure customer notification subscriptions.
-        Subscriptions are used to receive notifications related to ThreatX events, delivered either via email,
+        Subscriptions are used to receive notifications related
+        to ThreatX events, delivered either via email,
         webhook, or through a log emitter communicating directly to an analyzer.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/subscriptions"
 
         available_commands = ["save", "delete", "list", "enable", "disable"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def list_whitelist(self, payloads):
         """Get whitelist IPs.
 
         Method allows to get customer whitelisted IPs.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/whitelist"
 
         available_commands = ["list"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def list_blacklist(self, payloads):
         """Get blacklist IPs.
 
         Method allows to get customer blacklisted IPs.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/blacklist"
 
         available_commands = ["list"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def list_blocklist(self, payloads):
         """Get blocklisted IPs.
 
         Method allows to get customer blocked IPs.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/blocklist"
 
         available_commands = ["list"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def list_mutelist(self, payloads):
         """Get mutelisted IPs.
 
         Method allows to get customer mutelisted IPs.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/mutelist"
 
         available_commands = ["list"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def list_ignorelist(self, payloads):
         """Get ignorelisted IPs.
 
         Method allows to get customer ignorelisted IPs.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/ignorelist"
 
         available_commands = ["list"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def global_tags(self, payloads):
         """Global tags management.
 
-        Method allows to create new and provides information of global tags available for use.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        Method allows to create new and provides information of
+        global tags available for use.
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/globaltags"
 
         available_commands = ["new", "list"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def actor_tags(self, payloads):
         """Actor tags management.
 
         Method allows to create, manage and remove actor tags.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/actortags"
 
         available_commands = ["new", "list", "delete"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def features(self, payloads):
         url = f"{self.__generate_api_link(1)}/features"
 
         available_commands = ["list", "query", "save", "delete"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def metrics_tech(self, payloads):
         """API Profiler information.
 
         Method provides information of customer API Profiler.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/metrics/tech"
 
         available_commands = ["list_endpoint_profiles", "list_site_profiles"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def channels(self, payloads):
         """Channels management.
 
         Method allows to create, manage and remove customer channels.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/channels"
 
         available_commands = ["new", "list", "update"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def global_settings(self, payloads):
         """Customer-wide settings.
 
         Method allows to get default customer-wide settings applied.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/globalsettings"
 
         available_commands = ["get"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def dns_info(self, payloads):
+        # TODO: add docs
         url = f"{self.__generate_api_link(1)}/dnsinfo"
 
         available_commands = ["list"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def logs(self, payloads):
         """Customer logs.
 
         Method allows to get customer logs including audit logs, match events, etc.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/logs"
 
@@ -597,18 +561,16 @@ class Client:
         #     for log in response:
         #         log["customer"] = payload["customer_name"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def logs_v2(self, payloads):
         """Customer logs.
 
         Method allows to get customer logs including block, match and audit events.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(2)}/logs"
 
@@ -624,18 +586,16 @@ class Client:
         #     for log in response:
         #         log["customer"] = payload["customer_name"]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def lists(self, payloads):
         """Lists management.
 
         Method allows to manage IP addresses within black, block and whitelists.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/lists"
 
@@ -667,18 +627,16 @@ class Client:
             "ip_to_link",
         ]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
 
     def rules(self, payloads):
         """Rules management.
 
         Method allows to create, manage and remove customer rules.
-        :param dict payload: API payload containing main command and additional parameters.
-        :return:
+        :param list[dict]|dict payloads: API payloads or a single payload containing
+        main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
         """
         url = f"{self.__generate_api_link(1)}/rules"
 
@@ -705,8 +663,4 @@ class Client:
             "validate_rule"
         ]
 
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return results
+        return self.__run_async_processing(url, available_commands, payloads)
