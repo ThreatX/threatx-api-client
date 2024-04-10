@@ -2,6 +2,39 @@
 
 
 
+## v1.2.0 (2024-04-10)
+
+### Feature
+
+* feat: update readme ([`030716a`](https://github.com/ThreatX/threatx-api-client/commit/030716aa7a3055fd25e05eb9b1694801098943ea))
+
+### Fix
+
+* fix: typo ([`da16c7c`](https://github.com/ThreatX/threatx-api-client/commit/da16c7c4a1a05b6d629c2012fa2f9c090f596c73))
+
+* fix: add usage to readme contents ([`e3c065a`](https://github.com/ThreatX/threatx-api-client/commit/e3c065ae53fe65ae8eafa8ae7ca429bb44d91f18))
+
+### Refactor
+
+* refactor: formatting ([`ae41333`](https://github.com/ThreatX/threatx-api-client/commit/ae4133364de52e254ef5c853ed12066f591d8c33))
+
+* refactor: backwards compatibility ([`856baa7`](https://github.com/ThreatX/threatx-api-client/commit/856baa7b57d8a45e2480e04293c59178d3e8ca2e))
+
+* refactor: clean up ([`40c9c3b`](https://github.com/ThreatX/threatx-api-client/commit/40c9c3b97e12fc5c4024fb8a15f2690c2da064ff))
+
+* refactor: optimizations, get rid of requests ([`b661a1d`](https://github.com/ThreatX/threatx-api-client/commit/b661a1dbf9c90c7bd571043adb9c783869f272b9))
+
+* refactor(ruff): ruff checks compliance ([`5a1e309`](https://github.com/ThreatX/threatx-api-client/commit/5a1e3093501380bd7d070cd391f4d9d59e0a6e82))
+
+### Unknown
+
+* Merge pull request #4 from ThreatX/async_support
+
+Asyncio support ([`cb1df89`](https://github.com/ThreatX/threatx-api-client/commit/cb1df8937e628a09fb7257a6c90838bde34a2ea6))
+
+* wip: async_support ([`4c31b57`](https://github.com/ThreatX/threatx-api-client/commit/4c31b577e61cebdbd51b65e443dc3edcc9c85975))
+
+
 ## v1.1.0 (2024-02-22)
 
 ### Build
