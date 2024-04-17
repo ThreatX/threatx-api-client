@@ -25,9 +25,23 @@ interaction with ThreatX API.
 ### Initial setup
 1. Import class `Client`: `from threatx_api_client import Client`
 2. Initialize class object with required environment and API key provided: `tx_api = Client(api_env, api_key)`
-   Available environments:
-    - `prod`
-    - `pod`
+
+Available environments:
+- `prod`
+- `pod`
 
 ### API methods and commands
 Please check API reference guide and source code for available methods and commands.
+
+#### Example
+```
+tx_api = Client("prod", "apikeytest1234")
+payloads = [
+    {
+        "command": "list",
+        "customer_name": "testing_tenant"
+    }
+]
+response = tx_api.sites(payloads)
+print(response)
+```
