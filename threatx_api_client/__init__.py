@@ -49,19 +49,27 @@ class Client:
 
     async def __post(self, session, path: str, post_payload: dict):
         async with asyncio.Semaphore(self.parallel_requests):
-            async with session.post(path, json=post_payload) as raw_response:
+            marker_var = post_payload.get("marker_var")
+            clean_post_payload = post_payload.copy()
+            clean_post_payload.pop("marker_var", None)
+
+            async with session.post(path, json=clean_post_payload) as raw_response:
                 response = await raw_response.json(content_type=None)
                 response_ok_data = response.get("Ok")
                 response_error_data = response.get("Error")
 
                 if response_ok_data:
+                    if marker_var:
+                        return {marker_var: response_ok_data}
                     return response_ok_data
 
                 if response_error_data == "Token Expired. Please re-authenticate.":
                     self.session_token = self.__get_session_token()
                     return self.__post(session, path, post_payload)
-                else:
+                elif response_error_data:
                     raise TXAPIResponseError(response_error_data)
+                else:
+                    pass
 
     async def __process_response(self, path: str, available_commands: list, payloads):
         if isinstance(payloads, dict):
