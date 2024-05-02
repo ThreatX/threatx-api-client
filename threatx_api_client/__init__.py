@@ -6,7 +6,7 @@ from threatx_api_client.exceptions import (
     TXAPIIncorrectCommandError,
     TXAPIIncorrectEnvironmentError,
     TXAPIIncorrectTokenError,
-    TXAPIResponseError,
+    TXAPIResponseError, TXAPIError,
 )
 
 
@@ -67,9 +67,11 @@ class Client:
                     self.session_token = self.__get_session_token()
                     return self.__post(session, path, post_payload)
                 elif response_error_data:
-                    raise TXAPIResponseError(response_error_data)
+                    error_msg = {marker_var: response_error_data} if marker_var else response_error_data
+                    raise TXAPIResponseError(error_msg)
                 else:
-                    pass
+                    error_msg = {marker_var: raw_response} if marker_var else raw_response
+                    raise TXAPIError(error_msg)
 
     async def __process_response(self, path: str, available_commands: list, payloads):
         if isinstance(payloads, dict):
@@ -85,7 +87,7 @@ class Client:
                     session,
                     path,
                     {"token": self.session_token, **payload}) for payload in payloads
-            ))
+            ), return_exceptions=True)
 
         if len(responses) == 1:
             return responses[0]
