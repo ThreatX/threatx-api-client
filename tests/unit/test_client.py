@@ -12,6 +12,7 @@ from threatx_api_client import (
 
 class TestClient(TestCase):
     """Main API Client test class."""
+
     @classmethod
     def setUpClass(cls) -> None:
         """Setting up Main API Client class for tests."""
@@ -51,11 +52,13 @@ class TestClient(TestCase):
     def test_list_sites_incorrect_customer(self):
         """Test for incorrect customer in payload provided."""
         client = Client(self.api_env, self.api_key_prod)
-        with self.assertRaises(TXAPIResponseError):
-            client.sites({
-                "command": "list",
-                "customer_name": "fffamogus"
-            })
+
+        response = client.sites({
+            "command": "list",
+            "customer_name": "fffamogus"
+        })
+
+        assert isinstance(response, TXAPIResponseError)
 
     def test_list_sites(self):
         """Test for 'sites' method 'list' command."""
