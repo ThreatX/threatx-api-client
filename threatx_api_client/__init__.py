@@ -3,11 +3,14 @@ import asyncio
 import aiohttp
 
 from threatx_api_client.exceptions import (
+    TXAPIError,
     TXAPIIncorrectCommandError,
     TXAPIIncorrectEnvironmentError,
     TXAPIIncorrectTokenError,
-    TXAPIResponseError, TXAPIError,
+    TXAPIResponseError,
 )
+
+__version__ = "1.2.0"
 
 
 class Client:
@@ -26,6 +29,10 @@ class Client:
 
         self.api_env = api_env
         self.api_key = api_key
+
+        self.headers = {
+            "User-Agent": f"ThreatX-API-Client/{__version__}"
+        }
 
         self.parallel_requests = 10
 
@@ -81,7 +88,7 @@ class Client:
             if payload.get("command") not in available_commands:
                 raise TXAPIIncorrectCommandError(payload.get("command"))
 
-        async with aiohttp.ClientSession(base_url=self.base_url) as session:
+        async with aiohttp.ClientSession(base_url=self.base_url, headers=self.headers) as session:
             responses = await asyncio.gather(*(
                 self.__post(
                     session,
@@ -100,7 +107,7 @@ class Client:
         if not self.api_key:
             raise TXAPIIncorrectTokenError("Please provide TX API Key.")
 
-        async with aiohttp.ClientSession(base_url=self.base_url) as session:
+        async with aiohttp.ClientSession(base_url=self.base_url, headers=self.headers) as session:
             response = await asyncio.gather(
                 self.__post(
                     session,
