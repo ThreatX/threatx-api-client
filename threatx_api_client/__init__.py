@@ -10,7 +10,7 @@ from threatx_api_client.exceptions import (
     TXAPIResponseError,
 )
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 
 class Client:
