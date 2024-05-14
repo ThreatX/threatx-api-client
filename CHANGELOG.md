@@ -2,6 +2,27 @@
 
 
 
+## v1.3.0 (2024-05-14)
+
+### Feature
+
+* feat: custom user-agent ([`41eac4e`](https://github.com/ThreatX/threatx-api-client/commit/41eac4e6dac2a711efc8f87271f8ab1abd4c7379))
+
+* feat: add marker_var for async requests ([`238e843`](https://github.com/ThreatX/threatx-api-client/commit/238e843066b2905c945911bddb111c792bc8fd88))
+
+### Fix
+
+* fix: error handling ([`c6372bf`](https://github.com/ThreatX/threatx-api-client/commit/c6372bfb1e1514370b3457ea4fcc356dfb6a3f11))
+
+* fix: pytest ([`0eaca26`](https://github.com/ThreatX/threatx-api-client/commit/0eaca266246df604dbb50ffba0a571aa69c31bd7))
+
+### Refactor
+
+* refactor: better error handling ([`959cf4e`](https://github.com/ThreatX/threatx-api-client/commit/959cf4e4ee406178f3ce69040090cc0d9a7bb414))
+
+* refactor: add example to readme ([`e044202`](https://github.com/ThreatX/threatx-api-client/commit/e0442026659481d349c33056c6f94057c803449d))
+
+
 ## v1.2.0 (2024-04-10)
 
 ### Feature
