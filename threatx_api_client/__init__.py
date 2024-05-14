@@ -65,7 +65,7 @@ class Client:
                 response_ok_data = response.get("Ok")
                 response_error_data = response.get("Error")
 
-                if response_ok_data:
+                if response_ok_data is not None:
                     if marker_var:
                         return {marker_var: response_ok_data}
                     return response_ok_data
@@ -77,8 +77,7 @@ class Client:
                     error_msg = {marker_var: response_error_data} if marker_var else response_error_data
                     raise TXAPIResponseError(error_msg)
                 else:
-                    error_msg = {marker_var: raw_response} if marker_var else raw_response
-                    raise TXAPIError(error_msg)
+                    return {marker_var: response} if marker_var else response
 
     async def __process_response(self, path: str, available_commands: list, payloads):
         if isinstance(payloads, dict):
