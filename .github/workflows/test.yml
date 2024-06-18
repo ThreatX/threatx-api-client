@@ -1,0 +1,36 @@
+name: Test
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "threatx_api_client/**"
+      - "tests/**"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "threatx_api_client/**"
+      - "tests/**"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare environment
+        uses: "./.github/actions/environment"
+
+      - name: Ruff check
+        run: poetry run ruff check
+
+      - name: Pytest
+        run: poetry run pytest
+        env:
+          TX_API_PROD_KEY: ${{ secrets.TX_API_PROD_KEY }}
+          TX_API_POD_KEY: ${{ secrets.TX_API_POD_KEY }}
