@@ -1,16 +1,14 @@
 import asyncio
+import importlib.metadata
 
 import aiohttp
 
 from threatx_api_client.exceptions import (
-    TXAPIError,
     TXAPIIncorrectCommandError,
     TXAPIIncorrectEnvironmentError,
     TXAPIIncorrectTokenError,
     TXAPIResponseError,
 )
-
-__version__ = "1.3.0"
 
 
 class Client:
@@ -31,7 +29,7 @@ class Client:
         self.api_key = api_key
 
         self.headers = {
-            "User-Agent": f"ThreatX-API-Client/{__version__}"
+            "User-Agent": f"ThreatX-API-Client/{importlib.metadata.version('threatx_api_client')}"
         }
 
         self.parallel_requests = 10
