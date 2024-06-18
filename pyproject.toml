@@ -12,31 +12,20 @@ python = "^3.8"
 aiohttp = "^3.9.3"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.0.288"
+ruff = "^0.4.2"
 coverage = "^7.3.1"
 
 [tool.poetry.group.release.dependencies]
-python-semantic-release = "^8.0.8"
-pytest = "^7.4.2"
+python-semantic-release = "^9.8.1"
+pytest = "^8.2.2"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.semantic_release]
-version_toml = [
-    "pyproject.toml:tool.poetry.version"
-]
-version_variable = [
-    "threatx_api_client/__init__.py:__version__"
-]
-major_on_zero = false
-branch = "main"
-upload_to_vcs_release = true
-
 [tool.ruff]
 src = ["threatx_api_client", "tests"]
-select = [
+lint.select = [
     "F",
     "E",
     "W",
@@ -46,13 +35,23 @@ select = [
     "D",
     "PERF",
     "PL",
-    "FURB",
     "RUF",
     "UP"
 ]
+lint.ignore = [
+    "E501",
+    "D100",
+    "D102",
+    "D104"
+]
 
-[tool.ruff.isort]
-known-first-party = ["txsensorops"]
-
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.semantic_release]
+version_toml = [
+    "pyproject.toml:tool.poetry.version"
+]
+major_on_zero = false
+branch = "main"
+build_command = "poetry run ruff check && poetry run pytest"
