@@ -191,6 +191,7 @@ class Client:
 
         available_commands = [
             "list",
+            "list_all",
             "new",
             "get",
             "update",
