@@ -13,7 +13,7 @@ interaction with ThreatX API.
 ## Setup
 #### Install with pip:
 - Latest: `pip install git+https://github.com/ThreatX/threatx-api-client.git`
-- Release: `pip install https://github.com/ThreatX/threatx-api-client/releases/download/v1.1.0/threatx_api_client-1.1.0-py3-none-any.whl`
+- Release: `pip install https://github.com/ThreatX/threatx-api-client/releases/download/v1.3.0/threatx_api_client-1.3.0-py3-none-any.whl`
 
 #### Install with Poetry
 1. Install compatible Python version: >=3.8 <3.13
