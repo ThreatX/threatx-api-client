@@ -1,6 +1,26 @@
 # CHANGELOG
 
+## v1.4.0 (2024-07-26)
 
+### Chore
+
+* chore: project settings ([`fb2b77c`](https://github.com/ThreatX/threatx-api-client/commit/fb2b77c20fdcc084c627c919b834c47b15d8ff35))
+
+* chore: workflow changes ([`958fb3b`](https://github.com/ThreatX/threatx-api-client/commit/958fb3b47f63daae594985131b1faeab77aad39a))
+
+### Feature
+
+* feat: add list_all to customers ([`f420da3`](https://github.com/ThreatX/threatx-api-client/commit/f420da320c5772f948f1ce1563dd1e91da21bd87))
+
+* feat: dynamic version in UA ([`2ed8930`](https://github.com/ThreatX/threatx-api-client/commit/2ed89300105fdd85ff90635fcd2f1e6d92b64ab2))
+
+### Fix
+
+* fix: version ([`349262c`](https://github.com/ThreatX/threatx-api-client/commit/349262c04f96277e0e3e6b9db8f395a85278295b))
+
+### Unknown
+
+* Update README.md ([`4deb4c9`](https://github.com/ThreatX/threatx-api-client/commit/4deb4c97f6364d5326c22dbc50909c3085973416))
 
 ## v1.3.0 (2024-05-14)
 
@@ -21,7 +41,6 @@
 * refactor: better error handling ([`959cf4e`](https://github.com/ThreatX/threatx-api-client/commit/959cf4e4ee406178f3ce69040090cc0d9a7bb414))
 
 * refactor: add example to readme ([`e044202`](https://github.com/ThreatX/threatx-api-client/commit/e0442026659481d349c33056c6f94057c803449d))
-
 
 ## v1.2.0 (2024-04-10)
 
@@ -55,7 +74,6 @@ Asyncio support ([`cb1df89`](https://github.com/ThreatX/threatx-api-client/commi
 
 * wip: async_support ([`4c31b57`](https://github.com/ThreatX/threatx-api-client/commit/4c31b577e61cebdbd51b65e443dc3edcc9c85975))
 
-
 ## v1.1.0 (2024-02-22)
 
 ### Build
@@ -83,7 +101,6 @@ Asyncio support ([`cb1df89`](https://github.com/ThreatX/threatx-api-client/commi
 * Update README.md ([`503426b`](https://github.com/ThreatX/threatx-api-client/commit/503426b45154b5d65095a1174fd40399839ff3ae))
 
 * License added ([`ce11405`](https://github.com/ThreatX/threatx-api-client/commit/ce114058be24c784f1c323bc4aa445679e2d3149))
-
 
 ## v1.0.0 (2023-09-13)
 
