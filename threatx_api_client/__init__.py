@@ -1,5 +1,6 @@
 import asyncio
 import importlib.metadata
+from json import JSONDecodeError
 
 import aiohttp
 
@@ -59,7 +60,16 @@ class Client:
             clean_post_payload.pop("marker_var", None)
 
             async with session.post(path, json=clean_post_payload) as raw_response:
-                response = await raw_response.json(content_type=None)
+                try:
+                    response = await raw_response.json(content_type=None)
+                except JSONDecodeError:
+                    request_id = raw_response.headers.get("X-Request-ID")
+                    raise TXAPIResponseError(
+                        f"Could not parse the API response.\n"
+                        f"Request ID: {request_id}\n"
+                        f"Please contact: support@threatx.com"
+                    )
+
                 response_ok_data = response.get("Ok")
                 response_error_data = response.get("Error")
 
