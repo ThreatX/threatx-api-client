@@ -5,6 +5,7 @@
 - [Description](#description)
 - [Setup](#setup)
 - [Usage](#usage)
+- [Examples](#examples)
 
 ## Description
 ThreatX API Client is lightweight Python library designed to streamline the
@@ -33,7 +34,7 @@ interaction with ThreatX API.
 1. Import class `Client`: `from threatx_api_client import Client`
 2. Initialize class object with required environment and API key provided: `tx_api = Client(api_env, api_key)`
 
-Available environments:
+#### Available environments:
 - `prod`
 - `pod`
 
@@ -41,13 +42,13 @@ Available environments:
 Please check API reference guide and source code for available methods and commands.
 
 ## Examples
-### Class initialization
-```
+### **Class initialization**
+```python
 tx_api = Client("prod", "apikeytest1234")
 ```
 
-### Single request
-```
+### **Single request**
+```python
 tx_api.sites([
     {
         "command": "get",
@@ -57,14 +58,15 @@ tx_api.sites([
 ])
 ```
 For a single requests the [] list brackets can be omitted in payload.  
-The response will always be as it is, not in the list, but a plain dictionary.  
-**Output example:**
-```
+The response will always be as it is, not in the list, but a plain dictionary.
+
+#### Output example:
+```json
 {'hash': 1000000000001, 'hostname': 'randomsite1.com', ... }
 ```
 
-### Multiple requests
-```
+### **Multiple requests**
+```python
 sites = ["randomsite1.com", "randomsite2.com", "randomsite3.com"]
 tx_api.method([
     {
@@ -75,9 +77,10 @@ tx_api.method([
 ])
 ```
 Use list of dicts to send a batch of payloads and process them asynchronously.  
-The response will be the list of dicts, each dict represents a single response.  
-**Output example:**
-```
+The response will be the list of dicts, each dict represents a single response.
+
+#### Output example:
+```json
 [
 {'hash': 1000000000001, 'hostname': 'randomsite1.com', ...,}
 {'hash': 1000000000002, 'hostname': 'randomsite2.com', ...},
@@ -85,8 +88,8 @@ The response will be the list of dicts, each dict represents a single response.
 ]
 ```
 
-### Multiple marked requests
-```
+### **Multiple marked requests**
+```python
 sites = ["randomsite1.com", "randomsite2.com", "randomsite3.com"]
 tx_api.method([
     {
@@ -100,8 +103,8 @@ tx_api.method([
 The same as "Multiple requests" but with "marker_var" entry added to each request.  
 Marker variable will be returned with each request which it was attached to as a key and the response as its value. It could be useful for a further filtering/processing steps.
 
-**Output example:**
-```
+#### Output example:
+```json
 [
 {'randomsite1.com': {'hash': 1000000000001, 'hostname': 'randomsite1.com', ...}},
 {'randomsite2.com': {'hash': 1000000000002, 'hostname': 'randomsite2.com', ...}},
