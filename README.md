@@ -61,7 +61,7 @@ For a single requests the [] list brackets can be omitted in payload.
 The response will always be as it is, not in the list, but a plain dictionary.
 
 #### Output example:
-```json
+```
 {'hash': 1000000000001, 'hostname': 'randomsite1.com', ... }
 ```
 
@@ -80,7 +80,7 @@ Use list of dicts to send a batch of payloads and process them asynchronously.
 The response will be the list of dicts, each dict represents a single response.
 
 #### Output example:
-```json
+```
 [
 {'hash': 1000000000001, 'hostname': 'randomsite1.com', ...,}
 {'hash': 1000000000002, 'hostname': 'randomsite2.com', ...},
@@ -104,7 +104,7 @@ The same as "Multiple requests" but with "marker_var" entry added to each reques
 Marker variable will be returned with each request which it was attached to as a key and the response as its value. It could be useful for a further filtering/processing steps.
 
 #### Output example:
-```json
+```
 [
 {'randomsite1.com': {'hash': 1000000000001, 'hostname': 'randomsite1.com', ...}},
 {'randomsite2.com': {'hash': 1000000000002, 'hostname': 'randomsite2.com', ...}},
