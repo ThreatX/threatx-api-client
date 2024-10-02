@@ -10,6 +10,13 @@
 ThreatX API Client is lightweight Python library designed to streamline the
 interaction with ThreatX API.
 
+## Features
+- Async backend
+- Command validation
+- Error handling
+- Response marking
+- Token auto renewal
+
 ## Setup
 #### Install with pip:
 - Latest: `pip install git+https://github.com/ThreatX/threatx-api-client.git`
@@ -33,15 +40,71 @@ Available environments:
 ### API methods and commands
 Please check API reference guide and source code for available methods and commands.
 
-#### Example
+## Examples
+### Class initialization
 ```
 tx_api = Client("prod", "apikeytest1234")
-payloads = [
+```
+
+### Single request
+```
+tx_api.sites([
     {
-        "command": "list",
-        "customer_name": "testing_tenant"
+        "command": "get",
+        "customer_name": "soclab3",
+        "name": "soclab-juiceshop.securedmz.com"
     }
+])
+```
+For a single requests the [] list brackets can be omitted in payload.  
+The response will always be as it is, not in the list, but a plain dictionary.  
+**Output example:**
+```
+{'hash': 1000000000001, 'hostname': 'randomsite1.com', ... }
+```
+
+### Multiple requests
+```
+sites = ["randomsite1.com", "randomsite2.com", "randomsite3.com"]
+tx_api.method([
+    {
+        "command": "get",
+        "customer_name": "random_test_tenant",
+        "name": site
+    } for site in sites
+])
+```
+Use list of dicts to send a batch of payloads and process them asynchronously.  
+The response will be the list of dicts, each dict represents a single response.  
+**Output example:**
+```
+[
+{'hash': 1000000000001, 'hostname': 'randomsite1.com', ...,}
+{'hash': 1000000000002, 'hostname': 'randomsite2.com', ...},
+{'hash': 1000000000003, 'hostname': 'randomsite3.com', ...}
 ]
-response = tx_api.sites(payloads)
-print(response)
+```
+
+### Multiple marked requests
+```
+sites = ["randomsite1.com", "randomsite2.com", "randomsite3.com"]
+tx_api.method([
+    {
+        "command": "get",
+        "customer_name": "random_test_tenant",
+        "name": site,
+        "marker_var": site
+    } for site in sites
+])
+```
+The same as "Multiple requests" but with "marker_var" entry added to each request.  
+Marker variable will be returned with each request which it was attached to as a key and the response as its value. It could be useful for a further filtering/processing steps.
+
+**Output example:**
+```
+[
+{'randomsite1.com': {'hash': 1000000000001, 'hostname': 'randomsite1.com', ...}},
+{'randomsite2.com': {'hash': 1000000000002, 'hostname': 'randomsite2.com', ...}},
+{'randomsite3.com': {'hash': 1000000000003, 'hostname': 'randomsite3.com', ...}}
+]
 ```
