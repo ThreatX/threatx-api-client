@@ -49,11 +49,11 @@ tx_api = Client("prod", "apikeytest1234")
 
 ### **Single request**
 ```python
-tx_api.sites([
+tx_api.method([
     {
         "command": "get",
-        "customer_name": "soclab3",
-        "name": "soclab-juiceshop.securedmz.com"
+        "customer_name": "random_test_tenant",
+        "name": "randomsite1.com"
     }
 ])
 ```
