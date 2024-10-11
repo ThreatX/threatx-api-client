@@ -182,8 +182,8 @@ class Client:
             "list_api_keys",
             "new_api_key",
             "delete_api_key",
-            "get_customer_config",  # TODO: confirm
-            "set_customer_config",  # TODO: confirm
+            "get_customer_config",  # TODO: confirmed
+            "set_customer_config",  # TODO: confirmed
         ]
 
         return asyncio.run(self.__process_response(url, available_commands, payloads))
@@ -205,7 +205,7 @@ class Client:
             "get",
             "update",
             "delete",
-            "get_api_key",  # TODO: confirm
+            "get_api_key",  # TODO: confirmed
         ]
 
         return asyncio.run(self.__process_response(url, available_commands, payloads))
@@ -524,7 +524,13 @@ class Client:
         return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def dns_info(self, payloads):
-        # TODO: add docs
+        """DNS Configuration Retrieval.
+
+        Method allows clients to retrieve information necessary for configuring DNS to address ThreatX services.
+        :param list[dict]|dict payloads: API payloads or a single payload containing main command and additional parameters.
+        :return: responses: API responses
+        :rtype: list[dict]|dict
+        """
         url = f"{self.__generate_api_link(1)}/dnsinfo"
 
         available_commands = ["list"]
