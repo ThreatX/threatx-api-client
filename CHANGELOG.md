@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## v1.5.0 (2024-10-11)
+
+### Documentation
+
+* docs: improve ([`63b9a1f`](https://github.com/ThreatX/threatx-api-client/commit/63b9a1fd55c6c87aaa5732f310bc3d9535e2f2aa))
+
+* docs: improve ([`bf630e7`](https://github.com/ThreatX/threatx-api-client/commit/bf630e700fa0f8457ee61ee59b29ecc1cfab8b3b))
+
+* docs: improve ([`f0d0332`](https://github.com/ThreatX/threatx-api-client/commit/f0d0332e6dc6b92f08683ff86e682be29284dd1f))
+
+* docs: improve ([`e3a7650`](https://github.com/ThreatX/threatx-api-client/commit/e3a7650bda052e0f7a3b2ba26a7ce0820c767862))
+
+### Feature
+
+* feat: add non-JSON response error handling ([`d9a7b15`](https://github.com/ThreatX/threatx-api-client/commit/d9a7b157f6a6d75cdf30998a2d9feeef9c8d6f7f))
+
+### Refactor
+
+* refactor: use async run ([`268b4a7`](https://github.com/ThreatX/threatx-api-client/commit/268b4a71bd4ae1af0ea294f9870e825762c9fd1e))
+
+### Unknown
+
+* Update README.md ([`8ee4f5f`](https://github.com/ThreatX/threatx-api-client/commit/8ee4f5f662697352c4fb757c570eea1c0f4793b0))
+
 ## v1.4.0 (2024-07-26)
 
 ### Chore
