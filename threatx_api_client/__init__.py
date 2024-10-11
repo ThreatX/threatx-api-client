@@ -37,7 +37,7 @@ class Client:
 
         self.base_url = self.__get_api_env_host()
 
-        self.session_token = self.__get_session_token()
+        self.session_token = asyncio.run(self.__login())
 
     def __get_api_env_host(self):
         if self.api_env not in self.host_parts:
@@ -79,7 +79,7 @@ class Client:
                     return response_ok_data
 
                 if response_error_data == "Token Expired. Please re-authenticate.":
-                    self.session_token = self.__get_session_token()
+                    self.session_token = asyncio.run(self.__login())
                     return self.__post(session, path, post_payload)
                 elif response_error_data:
                     error_msg = {marker_var: response_error_data} if marker_var else response_error_data
@@ -130,33 +130,6 @@ class Client:
 
         return token_value
 
-    def __get_session_token(self):
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(self.__login())
-        return results
-
-    # TODO: Remove this?
-    # def auth(self, payload):
-    #     url = f"{self.__generate_api_link(1)}/auth"
-    #
-    #     available_commands = ["authorize", "refresh", "issue_password_reset", "redeem_password_reset"]
-    #
-    #     return self.__process_response(url, available_commands, payload)
-    #
-    # def auth_v2(self, payload):
-    #     url = f"{self.__generate_api_link(2)}/auth"
-    #
-    #     available_commands = ["authorize", "refresh"]
-    #
-    #     return self.__process_response(url, available_commands, payload)
-
-    def __run_async_processing(self, url, available_commands, payloads):
-        async_loop = asyncio.get_event_loop()
-        responses = async_loop.run_until_complete(
-            self.__process_response(url, available_commands, payloads)
-        )
-        return responses
-
     def api_keys(self, payloads):
         """API Keys management.
 
@@ -171,7 +144,7 @@ class Client:
 
         available_commands = ["list", "new", "update", "revoke"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def api_schemas(self, payloads):
         """API schemas management.
@@ -186,7 +159,7 @@ class Client:
 
         available_commands = ["save", "list", "delete"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def customers(self, payloads):
         """Customers management.
@@ -213,7 +186,7 @@ class Client:
             "set_customer_config",  # TODO: confirm
         ]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def users(self, payloads):
         """Users management.
@@ -235,7 +208,7 @@ class Client:
             "get_api_key",  # TODO: confirm
         ]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def sites(self, payloads):
         """Sites management.
@@ -250,7 +223,7 @@ class Client:
 
         available_commands = ["list", "new", "get", "delete", "update", "unset"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def site_groups(self, payloads):
         """Site groups management.
@@ -267,7 +240,7 @@ class Client:
 
         available_commands = ["list", "save", "delete"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def templates(self, payloads):
         """Templates management.
@@ -282,7 +255,7 @@ class Client:
 
         available_commands = ["set", "get", "delete"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def sensors(self, payloads):
         """Sensors information.
@@ -297,7 +270,7 @@ class Client:
 
         available_commands = ["list", "tags"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def services(self, payloads):
         """Services information.
@@ -313,7 +286,7 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def entities(self, payloads):
         """Entities management.
@@ -342,7 +315,7 @@ class Client:
             "count"
         ]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def metrics(self, payloads):
         """Statistical metrics.
@@ -372,7 +345,7 @@ class Client:
             "request_stats_hourly_by_endpoint"
         ]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def subscriptions(self, payloads):
         """Subscriptions management.
@@ -390,7 +363,7 @@ class Client:
 
         available_commands = ["save", "delete", "list", "enable", "disable"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def list_whitelist(self, payloads):
         """Get whitelist IPs.
@@ -405,7 +378,7 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def list_blacklist(self, payloads):
         """Get blacklist IPs.
@@ -420,7 +393,7 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def list_blocklist(self, payloads):
         """Get blocklisted IPs.
@@ -435,7 +408,7 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def list_mutelist(self, payloads):
         """Get mutelisted IPs.
@@ -450,7 +423,7 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def list_ignorelist(self, payloads):
         """Get ignorelisted IPs.
@@ -465,7 +438,7 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def global_tags(self, payloads):
         """Global tags management.
@@ -481,7 +454,7 @@ class Client:
 
         available_commands = ["new", "list"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def actor_tags(self, payloads):
         """Actor tags management.
@@ -496,14 +469,14 @@ class Client:
 
         available_commands = ["new", "list", "delete"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def features(self, payloads):
         url = f"{self.__generate_api_link(1)}/features"
 
         available_commands = ["list", "query", "save", "delete"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def metrics_tech(self, payloads):
         """API Profiler information.
@@ -518,7 +491,7 @@ class Client:
 
         available_commands = ["list_endpoint_profiles", "list_site_profiles"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def channels(self, payloads):
         """Channels management.
@@ -533,7 +506,7 @@ class Client:
 
         available_commands = ["new", "list", "update"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def global_settings(self, payloads):
         """Customer-wide settings.
@@ -548,7 +521,7 @@ class Client:
 
         available_commands = ["get"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def dns_info(self, payloads):
         # TODO: add docs
@@ -556,7 +529,7 @@ class Client:
 
         available_commands = ["list"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def logs(self, payloads):
         """Customer logs.
@@ -586,7 +559,7 @@ class Client:
         #     for log in response:
         #         log["customer"] = payload["customer_name"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def logs_v2(self, payloads):
         """Customer logs.
@@ -611,7 +584,7 @@ class Client:
         #     for log in response:
         #         log["customer"] = payload["customer_name"]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def lists(self, payloads):
         """Lists management.
@@ -652,7 +625,7 @@ class Client:
             "ip_to_link",
         ]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def rules(self, payloads):
         """Rules management.
@@ -688,4 +661,4 @@ class Client:
             "validate_rule"
         ]
 
-        return self.__run_async_processing(url, available_commands, payloads)
+        return asyncio.run(self.__process_response(url, available_commands, payloads))
