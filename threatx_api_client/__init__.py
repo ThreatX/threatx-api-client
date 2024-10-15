@@ -34,9 +34,7 @@ class Client:
         }
 
         self.parallel_requests = 10
-
         self.base_url = self.__get_api_env_host()
-
         self.session_token = asyncio.run(self.__login())
 
     def __get_api_env_host(self):
@@ -95,7 +93,10 @@ class Client:
             if payload.get("command") not in available_commands:
                 raise TXAPIIncorrectCommandError(payload.get("command"))
 
-        async with aiohttp.ClientSession(base_url=self.base_url, headers=self.headers) as session:
+        async with aiohttp.ClientSession(
+                base_url=self.base_url, headers=self.headers,
+                connector=aiohttp.TCPConnector(force_close=True, enable_cleanup_closed=True)
+        ) as session:
             responses = await asyncio.gather(*(
                 self.__post(
                     session,
@@ -114,7 +115,10 @@ class Client:
         if not self.api_key:
             raise TXAPIIncorrectTokenError("Please provide TX API Key.")
 
-        async with aiohttp.ClientSession(base_url=self.base_url, headers=self.headers) as session:
+        async with aiohttp.ClientSession(
+                base_url=self.base_url, headers=self.headers,
+                connector=aiohttp.TCPConnector(force_close=True, enable_cleanup_closed=True)
+        ) as session:
             response = await asyncio.gather(
                 self.__post(
                     session,
