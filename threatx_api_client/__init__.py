@@ -186,8 +186,8 @@ class Client:
             "list_api_keys",
             "new_api_key",
             "delete_api_key",
-            "get_customer_config",  # TODO: confirmed
-            "set_customer_config",  # TODO: confirmed
+            "get_customer_config",
+            "set_customer_config"
         ]
 
         return asyncio.run(self.__process_response(url, available_commands, payloads))
@@ -208,8 +208,7 @@ class Client:
             "new",
             "get",
             "update",
-            "delete",
-            "get_api_key",  # TODO: confirmed
+            "delete"
         ]
 
         return asyncio.run(self.__process_response(url, available_commands, payloads))
@@ -528,7 +527,7 @@ class Client:
         return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def dns_info(self, payloads):
-        """DNS Configuration Retrieval.
+        """DNS configuration information.
 
         Method allows clients to retrieve information necessary for configuring DNS to address ThreatX services.
         :param list[dict]|dict payloads: API payloads or a single payload containing main command and additional parameters.
@@ -563,12 +562,6 @@ class Client:
             "audit_log"
         ]
 
-        # TODO: investigate if it is still used
-        # enrich data (customer_name)
-        # if "customer_name" in payload:
-        #     for log in response:
-        #         log["customer"] = payload["customer_name"]
-
         return asyncio.run(self.__process_response(url, available_commands, payloads))
 
     def logs_v2(self, payloads):
@@ -587,12 +580,6 @@ class Client:
             "match_events",
             "audit_events"
         ]
-
-        # TODO: investigate if it is still used
-        # enrich data (customer_name)
-        # if "customer_name" in payload:
-        #     for log in response:
-        #         log["customer"] = payload["customer_name"]
 
         return asyncio.run(self.__process_response(url, available_commands, payloads))
 
