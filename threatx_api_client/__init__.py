@@ -1,6 +1,7 @@
 import asyncio
 import importlib.metadata
 from json import JSONDecodeError
+from typing import Optional
 
 import aiohttp
 
@@ -15,7 +16,7 @@ from threatx_api_client.exceptions import (
 class Client:
     """Main API Client class."""
 
-    def __init__(self, api_env, api_key):
+    def __init__(self, api_env, api_key, headers: Optional[dict] = None):
         """Main Client class initializer."""
         self.host_parts = {
             "prod": "",
@@ -32,6 +33,9 @@ class Client:
         self.headers = {
             "User-Agent": f"ThreatX-API-Client/{importlib.metadata.version('threatx_api_client')}"
         }
+
+        if headers:
+            self.headers = {**self.headers, **headers}
 
         self.parallel_requests = 10
         self.base_url = self.__get_api_env_host()
