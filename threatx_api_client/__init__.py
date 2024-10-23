@@ -12,6 +12,7 @@ from threatx_api_client.exceptions import (
     TXAPIResponseError,
 )
 
+tx_api_session_token = ""
 
 class Client:
     """Main API Client class."""
@@ -39,7 +40,9 @@ class Client:
 
         self.parallel_requests = 10
         self.base_url = self.__get_api_env_host()
-        self.session_token = asyncio.run(self.__login())
+
+        global tx_api_session_token  # noqa: PLW0603
+        tx_api_session_token = asyncio.run(self.__login())
 
     def __get_api_env_host(self):
         if self.api_env not in self.host_parts:
@@ -80,9 +83,12 @@ class Client:
                         return {marker_var: response_ok_data}
                     return response_ok_data
 
+                global tx_api_session_token  # noqa: PLW0603
+
                 if response_error_data == "Token Expired. Please re-authenticate.":
-                    self.session_token = asyncio.run(self.__login())
-                    return self.__post(session, path, post_payload)
+                    post_payload.pop("token", None)
+                    tx_api_session_token = await self.__login()
+                    return await self.__post(session, path, {"token": tx_api_session_token, **post_payload})
                 elif response_error_data:
                     error_msg = {marker_var: response_error_data} if marker_var else response_error_data
                     raise TXAPIResponseError(error_msg)
@@ -105,7 +111,7 @@ class Client:
                 self.__post(
                     session,
                     path,
-                    {"token": self.session_token, **payload}) for payload in payloads
+                    {"token": tx_api_session_token, **payload}) for payload in payloads
             ), return_exceptions=True)
 
         if len(responses) == 1:
