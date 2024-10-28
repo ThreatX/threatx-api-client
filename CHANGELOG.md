@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## v1.6.0 (2024-10-28)
+
+### Chore
+
+* chore: close todos ([`2db5e4d`](https://github.com/ThreatX/threatx-api-client/commit/2db5e4da92bdd9bbb542fadb4e3e172d62963350))
+
+### Feature
+
+* feat: allow custom headers ([`b64479c`](https://github.com/ThreatX/threatx-api-client/commit/b64479c4d0841525dad0afe781308a69895a4d8c))
+
+* feat: close connections ([`33af2ad`](https://github.com/ThreatX/threatx-api-client/commit/33af2adf5764aeebaac3c396a0bc7e3ff10c46f6))
+
+### Fix
+
+* fix: session expiration handling ([`1032865`](https://github.com/ThreatX/threatx-api-client/commit/10328659d9aa1bfc50efc93cee1d5600840c8298))
+
+### Unknown
+
+* add things for TODO ([`c233176`](https://github.com/ThreatX/threatx-api-client/commit/c233176f326f133f690dfa46318c776b35cd2223))
+
+* Update README.md ([`ca49bc1`](https://github.com/ThreatX/threatx-api-client/commit/ca49bc1844a026decaf8469d6049468daef5d865))
+
 ## v1.5.0 (2024-10-11)
 
 ### Documentation
