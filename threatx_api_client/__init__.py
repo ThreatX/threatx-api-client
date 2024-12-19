@@ -53,7 +53,7 @@ class Client:
         part = (f"-{self.host_parts.get(self.api_env)}"
                 if self.host_parts.get(self.api_env) else "")
 
-        return f"https://provision{part}.threatx.io"
+        return f"https://api{part}.threatx.io"
 
     def __generate_api_link(self, api_ver: int):
         return f"/{self.api_path}/v{api_ver}"
