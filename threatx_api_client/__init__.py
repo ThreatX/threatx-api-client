@@ -14,6 +14,7 @@ from threatx_api_client.exceptions import (
 
 tx_api_session_token = ""
 
+
 class Client:
     """Main API Client class."""
 
@@ -96,10 +97,9 @@ class Client:
                     return {marker_var: response} if marker_var else response
 
     async def __process_response(self, path: str, available_commands: list, payloads):
-        if isinstance(payloads, dict):
-            payloads = [payloads]
+        normalized_payloads = [payloads] if isinstance(payloads, dict) else payloads
 
-        for payload in payloads:
+        for payload in normalized_payloads:
             if payload.get("command") not in available_commands:
                 raise TXAPIIncorrectCommandError(payload.get("command"))
 
@@ -111,10 +111,10 @@ class Client:
                 self.__post(
                     session,
                     path,
-                    {"token": tx_api_session_token, **payload}) for payload in payloads
+                    {"token": tx_api_session_token, **payload}) for payload in normalized_payloads
             ), return_exceptions=True)
 
-        if len(responses) == 1:
+        if isinstance(payloads, dict):
             return responses[0]
 
         return responses
