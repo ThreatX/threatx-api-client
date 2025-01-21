@@ -164,3 +164,4 @@ class TestClient(TestCase):
             "customer_name": self.tenant
         })
         self.assertIsInstance(response, list)
+
