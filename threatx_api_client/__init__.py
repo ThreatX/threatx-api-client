@@ -14,6 +14,7 @@ from threatx_api_client.exceptions import (
 
 tx_api_session_token = ""
 
+
 class Client:
     """Main API Client class."""
 
@@ -38,7 +39,6 @@ class Client:
         if headers:
             self.headers = {**self.headers, **headers}
 
-        self.parallel_requests = 10
         self.base_url = self.__get_api_env_host()
 
         global tx_api_session_token  # noqa: PLW0603
@@ -59,47 +59,45 @@ class Client:
         return f"/{self.api_path}/v{api_ver}"
 
     async def __post(self, session, path: str, post_payload: dict):
-        async with asyncio.Semaphore(self.parallel_requests):
-            marker_var = post_payload.get("marker_var")
-            clean_post_payload = post_payload.copy()
-            clean_post_payload.pop("marker_var", None)
+        marker_var = post_payload.get("marker_var")
+        clean_post_payload = post_payload.copy()
+        clean_post_payload.pop("marker_var", None)
 
-            async with session.post(path, json=clean_post_payload) as raw_response:
-                try:
-                    response = await raw_response.json(content_type=None)
-                except JSONDecodeError:
-                    request_id = raw_response.headers.get("X-Request-ID")
-                    raise TXAPIResponseError(
-                        f"Could not parse the API response.\n"
-                        f"Request ID: {request_id}\n"
-                        f"Please contact: support@threatx.com"
-                    )
+        async with session.post(path, json=clean_post_payload) as raw_response:
+            try:
+                response = await raw_response.json(content_type=None)
+            except JSONDecodeError:
+                request_id = raw_response.headers.get("X-Request-ID")
+                raise TXAPIResponseError(
+                    f"Could not parse the API response.\n"
+                    f"Request ID: {request_id}\n"
+                    f"Please contact: support@threatx.com"
+                )
 
-                response_ok_data = response.get("Ok")
-                response_error_data = response.get("Error")
+            response_ok_data = response.get("Ok")
+            response_error_data = response.get("Error")
 
-                if response_ok_data is not None:
-                    if marker_var:
-                        return {marker_var: response_ok_data}
-                    return response_ok_data
+            if response_ok_data is not None:
+                if marker_var:
+                    return {marker_var: response_ok_data}
+                return response_ok_data
 
-                global tx_api_session_token  # noqa: PLW0603
+            global tx_api_session_token  # noqa: PLW0603
 
-                if response_error_data == "Token Expired. Please re-authenticate.":
-                    post_payload.pop("token", None)
-                    tx_api_session_token = await self.__login()
-                    return await self.__post(session, path, {"token": tx_api_session_token, **post_payload})
-                elif response_error_data:
-                    error_msg = {marker_var: response_error_data} if marker_var else response_error_data
-                    raise TXAPIResponseError(error_msg)
-                else:
-                    return {marker_var: response} if marker_var else response
+            if response_error_data == "Token Expired. Please re-authenticate.":
+                post_payload.pop("token", None)
+                tx_api_session_token = await self.__login()
+                return await self.__post(session, path, {"token": tx_api_session_token, **post_payload})
+            elif response_error_data:
+                error_msg = {marker_var: response_error_data} if marker_var else response_error_data
+                raise TXAPIResponseError(error_msg)
+            else:
+                return {marker_var: response} if marker_var else response
 
     async def __process_response(self, path: str, available_commands: list, payloads):
-        if isinstance(payloads, dict):
-            payloads = [payloads]
+        normalized_payloads = [payloads] if isinstance(payloads, dict) else payloads
 
-        for payload in payloads:
+        for payload in normalized_payloads:
             if payload.get("command") not in available_commands:
                 raise TXAPIIncorrectCommandError(payload.get("command"))
 
@@ -111,10 +109,10 @@ class Client:
                 self.__post(
                     session,
                     path,
-                    {"token": tx_api_session_token, **payload}) for payload in payloads
+                    {"token": tx_api_session_token, **payload}) for payload in normalized_payloads
             ), return_exceptions=True)
 
-        if len(responses) == 1:
+        if isinstance(payloads, dict):
             return responses[0]
 
         return responses

@@ -16,9 +16,11 @@ class TestClient(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """Setting up Main API Client class for tests."""
-        cls.api_key_prod = os.environ.get("TX_API_PROD_KEY")
+        api_key_prod = cls.api_key_prod = os.environ.get("TX_API_PROD_KEY")
         cls.api_key_pod = os.environ.get("TX_API_POD_KEY")
-        cls.api_env = "prod"
+        api_env = cls.api_env = "prod"
+        cls.tenant = os.environ.get("TX_API_TEST_TENANT")
+        cls.prod_client = Client(api_env, api_key_prod)
 
     def test_incorrect_env(self):
         """Test for incorrect environment provided."""
@@ -42,18 +44,15 @@ class TestClient(TestCase):
 
     def test_sites_incorrect_command(self):
         """Test for incorrect command in payload provided."""
-        client = Client(self.api_env, self.api_key_prod)
         with self.assertRaises(TXAPIIncorrectCommandError):
-            client.sites({
+            self.prod_client.sites({
                 "command": "AyyLmao",
-                "customer_name": "soclab3"
+                "customer_name": self.tenant
             })
 
     def test_list_sites_incorrect_customer(self):
         """Test for incorrect customer in payload provided."""
-        client = Client(self.api_env, self.api_key_prod)
-
-        response = client.sites({
+        response = self.prod_client.sites({
             "command": "list",
             "customer_name": "fffamogus"
         })
@@ -62,98 +61,106 @@ class TestClient(TestCase):
 
     def test_list_sites(self):
         """Test for 'sites' method 'list' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.sites({
+        response = self.prod_client.sites({
             "command": "list",
-            "customer_name": "soclab3"
+            "customer_name": self.tenant
         })
         self.assertIsInstance(response, list)
 
-    # TODO: Remove this?
-    # def test_refresh_auth(self):
-    #     client = Client(self.api_env, self.api_key_prod)
-    #     response = client.auth({
-    #         "command": "refresh"
-    #     })
-    #     self.assertIn("token", response)
-
     def test_get_customers(self):
         """Test for 'customers' method 'get' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.customers({
+        response = self.prod_client.customers({
             "command": "get",
-            "name": "soclab3"
+            "name": self.tenant
         })
         self.assertIsInstance(response, dict)
 
+    def test_get_customers_list(self):
+        """Test for 'customers' method 'get' command."""
+        response = self.prod_client.customers([{
+            "command": "get",
+            "name": self.tenant
+        }])
+        self.assertIsInstance(response, list)
+
     def test_list_users(self):
         """Test for 'users' method 'list' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.users({
+        response = self.prod_client.users({
             "command": "list",
-            "customer_name": "soclab3"
+            "customer_name": self.tenant
         })
+        self.assertIsInstance(response, list)
+
+    def test_list_users_marker_var_single(self):
+        """Test for 'users' method 'list' command."""
+        response = self.prod_client.users({
+            "command": "list",
+            "customer_name": self.tenant,
+            "marker_var": "test"
+        })
+        self.assertIsInstance(response, dict)
+
+    def test_list_users_marker_var_list(self):
+        """Test for 'users' method 'list' command."""
+        response = self.prod_client.users([{
+            "command": "list",
+            "customer_name": self.tenant,
+            "marker_var": "test"
+        }])
         self.assertIsInstance(response, list)
 
     def test_get_templates(self):
         """Test for 'templates' method 'get' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.templates({
+        response = self.prod_client.templates({
             "command": "get",
-            "customer_name": "soclab3"
+            "customer_name": self.tenant
         })
         self.assertIsInstance(response, dict)
 
     def test_list_sensors(self):
         """Test for 'sensors' method 'list' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.sensors({
+        response = self.prod_client.sensors({
             "command": "list",
-            "customer_name": "soclab3"
+            "customer_name": self.tenant
         })
         self.assertIsInstance(response, list)
 
     def test_list_services(self):
         """Test for 'services' method 'list' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.services({
+        response = self.prod_client.services({
             "command": "list",
-            "customer_name": "soclab3"
+            "customer_name": self.tenant
         })
         self.assertIsInstance(response, list)
 
     def test_list_entities(self):
         """Test for 'entities' method 'list' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.entities({
+        response = self.prod_client.entities({
             "command": "list",
-            "customer_name": "soclab3"
+            "customer_name": self.tenant
         })
         self.assertIsInstance(response, list)
 
     def test_list_subscriptions(self):
         """Test for 'subscriptions' method 'list' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.subscriptions({
+        response = self.prod_client.subscriptions({
             "command": "list",
-            "customer_name": "soclab3"
+            "customer_name": self.tenant
         })
         self.assertIsInstance(response, list)
 
     def test_list_blacklist_lists(self):
         """Test for 'lists' method 'list_blacklist' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.lists({
+        response = self.prod_client.lists({
             "command": "list_blacklist",
-            "customer_name": "soclab3"
+            "customer_name": self.tenant
         })
         self.assertIsInstance(response, list)
 
     def test_list_customer_rules(self):
         """Test for 'rules' method 'list_customer_rules' command."""
-        client = Client(self.api_env, self.api_key_prod)
-        response = client.rules({
+        response = self.prod_client.rules({
             "command": "list_customer_rules",
-            "customer_name": "soclab3"
+            "customer_name": self.tenant
         })
         self.assertIsInstance(response, list)
