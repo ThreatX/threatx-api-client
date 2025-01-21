@@ -27,8 +27,7 @@ interaction with ThreatX API.
 #### Install with pip:
 
 - Latest: `pip install git+https://github.com/ThreatX/threatx-api-client.git`
--
-Release: `pip install https://github.com/ThreatX/threatx-api-client/releases/download/v1.6.0/threatx_api_client-1.5.0-py3-none-any.whl`
+- Release: `pip install https://github.com/ThreatX/threatx-api-client/releases/download/v1.6.1/threatx_api_client-1.6.1-py3-none-any.whl`
 
 #### Install with Poetry
 
