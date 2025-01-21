@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "threatx-api-client"
-version = "1.6.0"
+version = "1.6.1"
 description = "A client library for the ThreatX API"
 authors = ["Nikita Ratskov <nikita.ratskov@threatx.com>"]
 license = "Apache-2.0"
