@@ -1,6 +1,8 @@
 # ThreatX API Client
 
 [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Actions status](https://github.com/astral-sh/ruff/workflows/CI/badge.svg)](https://github.com/ThreatX/threatx-api-client/actions)
 [![Release](https://img.shields.io/github/release/ThreatX/threatx-api-client?label=release)](https://github.com/ThreatX/threatx-api-client/releases)
 ![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FThreatX%2Fthreatx-api-client%2Frefs%2Fheads%2Fmain%2Fpyproject.toml)
 

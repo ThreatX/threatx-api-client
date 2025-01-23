@@ -48,6 +48,16 @@ A pull request is a proposal to merge a set of changes from one branch into anot
 In a pull request, collaborators can review and discuss the proposed set of changes
 before they integrate the changes into the main codebase.
 
+All the commits pushed must follow [Conventional Commits](https://www.conventionalcommits.org) specification.
+
+### Code style requirements:
+
+These requirements are applied only to the Python code changes.
+
+- Code must pass all the pytest and ruff checks before being merged to the main branch.
+- Run `ruff check` to verify that the code aligns with all the style requirements.
+- Run `pytest` to verify that the code passes all the unit tests.
+
 ### Guideline:
 
 1. Clone the project: `git clone git@github.com:ThreatX/threatx-api-client.git`
@@ -56,3 +66,9 @@ before they integrate the changes into the main codebase.
 4. Open a PR in GitHub with appropriate labels, title and description.
 
 Please check [this guide](https://www.baeldung.com/ops/git-guide), if you are new to the git.
+
+## Releases
+
+This project follows [Semantic Versioning (SemVer)](https://semver.org/) for versioning its releases.
+All releases are managed and pushed by the main maintainers,
+ensuring adherence to these versioning guidelines for consistency and clarity of the repository.
