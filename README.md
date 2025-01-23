@@ -50,7 +50,7 @@ Please check API reference guide and the source code for available methods and c
 
 #### Examples
 
-Code examples are available here: https://github.com/ThreatX/threatx-api-client/examples
+Code examples are available [here](https://github.com/ThreatX/threatx-api-client/tree/main/examples).
 
 ## Contributing & Support
 
