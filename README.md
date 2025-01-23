@@ -9,10 +9,9 @@
 ## Contents
 
 - [Description](#description)
-- [Setup](#setup)
+- [Installation](#installation)
 - [Usage](#usage)
-- [Examples](#examples)
-- [Contributing](#contributing)
+- [Contributing & Support](#contributing--support)
 - [License](#license)
 
 ## Description
