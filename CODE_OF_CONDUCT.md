@@ -1,4 +1,4 @@
-# Code of Conflict
+# Code of Conduct
 
 Your code and ideas behind it will be carefully reviewed, often resulting in critique and criticism.
 The review will almost always require improvements to the code before it can be merged to the main branch.
@@ -16,7 +16,7 @@ Try to keep in mind the immortal words of Bill and Ted, “Be excellent to each 
 
 ## Attribution
 
-This Code of Conflict is adapted from
+This Code of Conduct is adapted from
 the [Linux Kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/?id=27c5a778dfe23d1de8d9ebfbc6a54595a79ac709),
 Code of Conflict version 4.10, available
 [here](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/code-of-conflict.rst?id=27c5a778dfe23d1de8d9ebfbc6a54595a79ac709).
