@@ -44,6 +44,7 @@ Code examples are available here: https://github.com/ThreatX/threatx-api-client/
 ## Contributing & Support
 Feel free to open an [issue](https://github.com/ThreatX/threatx-api-client/issues) or a [pull request](https://github.com/ThreatX/threatx-api-client/pulls) if you find a bug or want to suggest a new feature.
 For more information, check out our [contributing guide](https://github.com/ThreatX/threatx-api-client/docs/contributing.md).
+For general support, please reach out to our support team: [support@threatx.com](mailto:support@threatx.com).
 
 ## License
 Copyright © 2023-2025 ThreatX, https://www.threatx.com/
