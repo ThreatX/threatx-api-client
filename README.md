@@ -8,6 +8,8 @@
 - [Setup](#setup)
 - [Usage](#usage)
 - [Examples](#examples)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Description
 Python aiohttp based ThreatX API Client is lightweight Python library designed to streamline the
@@ -20,23 +22,16 @@ interaction with ThreatX API.
 - Response marking
 - Token auto renewal
 
-## Setup
-#### Install with pip:
-- Latest: `pip install git+https://github.com/ThreatX/threatx-api-client.git`
-- Release: `pip install https://github.com/ThreatX/threatx-api-client/releases/download/v1.6.0/threatx_api_client-1.5.0-py3-none-any.whl`
-
-#### Install with Poetry
-1. Install compatible Python version: >=3.8 <3.13
-2. `git pull git@github.com:ThreatX/threatx-api-client.git`
-3. `poetry install`
-4. Import library to where you want
+## Installation
+ThreatX API Client supports multiple installation methods.
+See [documentation](https://github.com/ThreatX/threatx-api-client/docs/installation.md) for available options.
 
 ## Usage
-### Initial setup
+### Class import
 1. Import class `Client`: `from threatx_api_client import Client`
 2. Initialize class object with required environment and API key provided: `tx_api = Client(api_env, api_key)`
 
-#### Available environments:
+#### Available environment options:
 - `prod`
 - `pod`
 
@@ -44,4 +39,16 @@ interaction with ThreatX API.
 Please check API reference guide and the source code for available methods and commands.
 
 ## Examples
-Code examples are available here: https://github.com/ThreatX/threatx-api-client/examples 
+Code examples are available here: https://github.com/ThreatX/threatx-api-client/examples
+
+## Contributing & Support
+Feel free to open an [issue](https://github.com/ThreatX/threatx-api-client/issues) or a [pull request](https://github.com/ThreatX/threatx-api-client/pulls) if you find a bug or want to suggest a new feature.
+For more information, check out our [contributing guide](https://github.com/ThreatX/threatx-api-client/docs/contributing.md).
+
+## License
+Copyright © 2023-2025 ThreatX, https://www.threatx.com/
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
