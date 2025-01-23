@@ -47,7 +47,7 @@ See [documentation](https://github.com/ThreatX/threatx-api-client/docs/installat
 
 Please check API reference guide and the source code for available methods and commands.
 
-## Examples
+#### Examples
 
 Code examples are available here: https://github.com/ThreatX/threatx-api-client/examples
 
