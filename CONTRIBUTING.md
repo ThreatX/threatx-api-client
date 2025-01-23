@@ -44,6 +44,10 @@ Before opening a new FR, please if this has already been reported.
 
 ## Pull requests
 
+A pull request is a proposal to merge a set of changes from one branch into another.
+In a pull request, collaborators can review and discuss the proposed set of changes
+before they integrate the changes into the main codebase.
+
 ### Guideline:
 
 1. Clone the project: `git clone git@github.com:ThreatX/threatx-api-client.git`
