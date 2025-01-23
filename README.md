@@ -1,5 +1,7 @@
 # ThreatX API Client
+[![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 [![Release](https://img.shields.io/github/release/ThreatX/threatx-api-client?label=release)](https://github.com/ThreatX/threatx-api-client/releases)
+![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FThreatX%2Fthreatx-api-client%2Frefs%2Fheads%2Fmain%2Fpyproject.toml)
 
 ## Contents
 - [Description](#description)
@@ -8,7 +10,7 @@
 - [Examples](#examples)
 
 ## Description
-ThreatX API Client is lightweight Python library designed to streamline the
+Python aiohttp based ThreatX API Client is lightweight Python library designed to streamline the
 interaction with ThreatX API.
 
 ## Features
@@ -39,75 +41,7 @@ interaction with ThreatX API.
 - `pod`
 
 ### API methods and commands
-Please check API reference guide and source code for available methods and commands.
+Please check API reference guide and the source code for available methods and commands.
 
 ## Examples
-### **Class initialization**
-```python
-tx_api = Client("prod", "apikeytest1234")
-```
-
-### **Single request**
-```python
-tx_api.method([
-    {
-        "command": "get",
-        "customer_name": "random_test_tenant",
-        "name": "randomsite1.com"
-    }
-])
-```
-For a single requests the [] list brackets can be omitted in payload.  
-The response will always be as it is, not in the list, but a plain dictionary.
-
-#### Output example:
-```
-{'hash': 1000000000001, 'hostname': 'randomsite1.com', ... }
-```
-
-### **Multiple requests**
-```python
-sites = ["randomsite1.com", "randomsite2.com", "randomsite3.com"]
-tx_api.method([
-    {
-        "command": "get",
-        "customer_name": "random_test_tenant",
-        "name": site
-    } for site in sites
-])
-```
-Use list of dicts to send a batch of payloads and process them asynchronously.  
-The response will be the list of dicts, each dict represents a single response.
-
-#### Output example:
-```
-[
-{'hash': 1000000000001, 'hostname': 'randomsite1.com', ...,}
-{'hash': 1000000000002, 'hostname': 'randomsite2.com', ...},
-{'hash': 1000000000003, 'hostname': 'randomsite3.com', ...}
-]
-```
-
-### **Multiple marked requests**
-```python
-sites = ["randomsite1.com", "randomsite2.com", "randomsite3.com"]
-tx_api.method([
-    {
-        "command": "get",
-        "customer_name": "random_test_tenant",
-        "name": site,
-        "marker_var": site
-    } for site in sites
-])
-```
-The same as "Multiple requests" but with "marker_var" entry added to each request.  
-Marker variable will be returned with each request which it was attached to as a key and the response as its value. It could be useful for a further filtering/processing steps.
-
-#### Output example:
-```
-[
-{'randomsite1.com': {'hash': 1000000000001, 'hostname': 'randomsite1.com', ...}},
-{'randomsite2.com': {'hash': 1000000000002, 'hostname': 'randomsite2.com', ...}},
-{'randomsite3.com': {'hash': 1000000000003, 'hostname': 'randomsite3.com', ...}}
-]
-```
+Code examples are available here: https://github.com/ThreatX/threatx-api-client/examples 
