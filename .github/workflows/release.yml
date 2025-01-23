@@ -28,6 +28,7 @@ jobs:
         env:
           TX_API_PROD_KEY: ${{ secrets.TX_API_PROD_KEY }}
           TX_API_POD_KEY: ${{ secrets.TX_API_POD_KEY }}
+          TX_API_TEST_TENANT: ${{ secrets.TX_API_TEST_TENANT }}
 
       - name: Build Python WHL package
         run: poetry build -f wheel
