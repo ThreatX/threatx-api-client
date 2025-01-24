@@ -51,7 +51,7 @@ convention = "google"
 
 [tool.semantic_release]
 version_toml = [
-    "pyproject.toml:tool.poetry.version",
+    "pyproject.toml:project.version",
 
 ]
 major_on_zero = false
