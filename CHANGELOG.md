@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v1.6.2 (2025-02-28)
+
+### Bug Fixes
+
+- Command validation
+  ([`34f9e50`](https://github.com/ThreatX/threatx-api-client/commit/34f9e50293e38844b0a61ec0d89b0e3a0f361d44))
+
+- Sematic version
+  ([`4e77b1e`](https://github.com/ThreatX/threatx-api-client/commit/4e77b1e51a20a90dfed1bc00cf819ad43900516f))
+
+### Chores
+
+- Add test env var
+  ([`abf8938`](https://github.com/ThreatX/threatx-api-client/commit/abf89381e3d0c9c7a089ff4f089db1b3bbb54cf7))
+
+- Readme changes
+  ([`858cdc0`](https://github.com/ThreatX/threatx-api-client/commit/858cdc0ba3d9b4f7085c35d591e852773e6b11e0))
+
+### Refactoring
+
+- Pyproject changes
+  ([`bfcd443`](https://github.com/ThreatX/threatx-api-client/commit/bfcd443ffdf40e01fdd8d641c4790f30fd4a13d5))
+
+
 ## v1.6.1 (2025-01-21)
 
 ### Bug Fixes
@@ -15,14 +39,59 @@ provision is deprecated. All API clients shoudl use the api* url from now on.
 
 ### Chores
 
+- Add CoC
+  ([`869aaa5`](https://github.com/ThreatX/threatx-api-client/commit/869aaa5483481aed2851e6516ad1a715f1ec1395))
+
+- Add code examples
+  ([`ffe743c`](https://github.com/ThreatX/threatx-api-client/commit/ffe743c04466861e331b38a044b6898ce05b54ce))
+
+- Add email
+  ([`d07013e`](https://github.com/ThreatX/threatx-api-client/commit/d07013e533ca9c1749cfedc44aa4112d40daaa98))
+
 - Add test env var
   ([`4e03fbd`](https://github.com/ThreatX/threatx-api-client/commit/4e03fbda3cfe8ea9bfc2064bf0b28e8820b44856))
+
+- Change readme
+  ([`8fb156e`](https://github.com/ThreatX/threatx-api-client/commit/8fb156e526a0d5371f72db6616d85ceedc5152fa))
+
+- Changes
+  ([`66c75fe`](https://github.com/ThreatX/threatx-api-client/commit/66c75feb17f3d4f387c5b2bf8d088763eb8656e5))
+
+- Changes
+  ([`c5b8474`](https://github.com/ThreatX/threatx-api-client/commit/c5b8474d2544bb2e6f9a3bb5dbc7347ba480048a))
+
+- Fix readme
+  ([`681e806`](https://github.com/ThreatX/threatx-api-client/commit/681e8068be316ed802a7489c5271cf4ce6a8af12))
+
+- Formatting
+  ([`67a9e87`](https://github.com/ThreatX/threatx-api-client/commit/67a9e8708bac57224f7e30d8184c6abe3111fa28))
+
+- Guidelines
+  ([`65598f8`](https://github.com/ThreatX/threatx-api-client/commit/65598f8e7432e514c2e0ab8d20e66f73c2c04cb3))
+
+- Improvements
+  ([`4dea961`](https://github.com/ThreatX/threatx-api-client/commit/4dea961dbc74fa1878f96cf38c413eac32c3d2b7))
+
+- Poetry
+  ([`a66e3d6`](https://github.com/ThreatX/threatx-api-client/commit/a66e3d6050d173447b021ef53c8a1466625fc362))
+
+- Proper name
+  ([`09d1878`](https://github.com/ThreatX/threatx-api-client/commit/09d187811ef7a1b5359fb2feeff2c737aaabaa4e))
+
+- Proper name
+  ([`dedfec2`](https://github.com/ThreatX/threatx-api-client/commit/dedfec2201a855d905396939712e1f66297c63e0))
 
 - Readme changes
   ([`22c39cd`](https://github.com/ThreatX/threatx-api-client/commit/22c39cd9b52833f2e294e76401454d087656a571))
 
+- Switch to PEP 621
+  ([`9ed13cd`](https://github.com/ThreatX/threatx-api-client/commit/9ed13cdc1b7846110bd7fba5129e3ebcba2f5bb2))
+
 - Trigger test
   ([`0cb9b54`](https://github.com/ThreatX/threatx-api-client/commit/0cb9b543483a7ea4bd325cf3d0c476f59f7fdb8c))
+
+- Updates
+  ([`78a5aee`](https://github.com/ThreatX/threatx-api-client/commit/78a5aeec107b7485081be38b3f864f9d12f899f0))
 
 - Workflow
   ([`7c741d9`](https://github.com/ThreatX/threatx-api-client/commit/7c741d92f75b61e74d2a87158bc21a1560d74ecd))
