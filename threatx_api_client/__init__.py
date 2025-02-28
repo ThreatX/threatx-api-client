@@ -626,8 +626,8 @@ class Client:
             "bulk_delete_blacklist",
             "bulk_delete_blocklist",
             "bulk_delete_whitelist",
-            "bulk_delete_ignorelist"
-            "ip_to_link",
+            "bulk_delete_ignorelist",
+            "ip_to_link"
         ]
 
         return asyncio.run(self.__process_response(url, available_commands, payloads))
