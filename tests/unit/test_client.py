@@ -26,7 +26,7 @@ class TestClient(TestCase):
     def test_incorrect_env(self):
         """Test for incorrect environment provided."""
         with self.assertRaises(TXAPIIncorrectEnvironmentError):
-            Client("", "")
+            Client("", "12345678")
 
     def test_empty_token(self):
         """Test for no API token provided."""
