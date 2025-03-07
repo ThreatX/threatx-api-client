@@ -41,9 +41,6 @@ class Client:
 
         self.base_url = self.__get_api_env_host()
 
-        global tx_api_session_token  # noqa: PLW0603
-        tx_api_session_token = asyncio.run(self.__login())
-
     def __get_api_env_host(self):
         if self.api_env not in self.host_parts:
             raise TXAPIIncorrectEnvironmentError(
@@ -100,6 +97,11 @@ class Client:
         for payload in normalized_payloads:
             if payload.get("command") not in available_commands:
                 raise TXAPIIncorrectCommandError(payload.get("command"))
+
+        global tx_api_session_token  # noqa: PLW0603
+
+        if not tx_api_session_token:
+            tx_api_session_token = await self.__login()
 
         async with aiohttp.ClientSession(
                 base_url=self.base_url, headers=self.headers,
