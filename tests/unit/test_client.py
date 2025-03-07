@@ -1,3 +1,4 @@
+import asyncio
 import os
 from unittest import TestCase
 
@@ -35,7 +36,8 @@ class TestClient(TestCase):
     def test_incorrect_token(self):
         """Test for incorrect API token provided."""
         with self.assertRaises(TXAPIIncorrectTokenError):
-            Client("prod", "a34456456gfd")
+            client = Client("prod", "a34456456gfd")
+            asyncio.run(client._Client__login())  # Private method test hack
 
     def test_correct_token_and_env(self):
         """Test for correct API token and environment provided."""

@@ -20,6 +20,9 @@ class Client:
 
     def __init__(self, api_env, api_key, headers: Optional[dict] = None):
         """Main Client class initializer."""
+        if not api_key:
+            raise TXAPIIncorrectTokenError("Please provide TX API Key.")
+
         self.host_parts = {
             "prod": "",
             "pod": "tx-us-east-2a",
@@ -27,9 +30,11 @@ class Client:
             "dev": "dev0",
             "staging": "staging0"
         }
-        self.api_path = "tx_api"
-
         self.api_env = api_env
+
+        self.base_url = self.__get_api_env_host()
+
+        self.api_path = "tx_api"
         self.api_key = api_key
 
         self.headers = {
@@ -38,8 +43,6 @@ class Client:
 
         if headers:
             self.headers = {**self.headers, **headers}
-
-        self.base_url = self.__get_api_env_host()
 
     def __get_api_env_host(self):
         if self.api_env not in self.host_parts:
