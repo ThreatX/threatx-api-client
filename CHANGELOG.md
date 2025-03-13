@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## v1.6.3 (2025-03-13)
+
+### Bug Fixes
+
+- Move token creation into async method
+  ([`1813a8d`](https://github.com/ThreatX/threatx-api-client/commit/1813a8de75c505980f84e97a3b14057d8790d3cf))
+
+- Tests
+  ([`f11b311`](https://github.com/ThreatX/threatx-api-client/commit/f11b3113aff00e404ea137d4128d7d1c1a68c768))
+
+- Tests
+  ([`8825314`](https://github.com/ThreatX/threatx-api-client/commit/882531477cde449e287ed98362fa0f75213dedb0))
+
+
 ## v1.6.2 (2025-02-28)
 
 ### Bug Fixes
