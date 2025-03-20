@@ -5,7 +5,6 @@ from unittest import TestCase
 from threatx_api_client import (
     Client,
     TXAPIIncorrectCommandError,
-    TXAPIIncorrectEnvironmentError,
     TXAPIIncorrectTokenError,
     TXAPIResponseError,
 )
@@ -22,11 +21,6 @@ class TestClient(TestCase):
         api_env = cls.api_env = "prod"
         cls.tenant = os.environ.get("TX_API_TEST_TENANT")
         cls.prod_client = Client(api_env, api_key_prod)
-
-    def test_incorrect_env(self):
-        """Test for incorrect environment provided."""
-        with self.assertRaises(TXAPIIncorrectEnvironmentError):
-            Client("", "12345678")
 
     def test_empty_token(self):
         """Test for no API token provided."""

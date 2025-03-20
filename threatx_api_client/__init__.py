@@ -7,7 +7,6 @@ import aiohttp
 
 from threatx_api_client.exceptions import (
     TXAPIIncorrectCommandError,
-    TXAPIIncorrectEnvironmentError,
     TXAPIIncorrectTokenError,
     TXAPIResponseError,
 )
@@ -18,21 +17,12 @@ tx_api_session_token = ""
 class Client:
     """Main API Client class."""
 
-    def __init__(self, api_env, api_key, headers: Optional[dict] = None):
+    def __init__(self, api_env, api_key, headers: Optional[dict] = None, verify_ssl: bool = True):
         """Main Client class initializer."""
         if not api_key:
             raise TXAPIIncorrectTokenError("Please provide TX API Key.")
 
-        self.host_parts = {
-            "prod": "",
-            "pod": "tx-us-east-2a",
-            "qa": "qa0",
-            "dev": "dev0",
-            "staging": "staging0"
-        }
-        self.api_env = api_env
-
-        self.base_url = self.__get_api_env_host()
+        self.base_url = self.__get_api_env_host(api_env)
 
         self.api_path = "tx_api"
         self.api_key = api_key
@@ -44,16 +34,23 @@ class Client:
         if headers:
             self.headers = {**self.headers, **headers}
 
-    def __get_api_env_host(self):
-        if self.api_env not in self.host_parts:
-            raise TXAPIIncorrectEnvironmentError(
-                f"TX API Env '{self.api_env}' not found!"
-            )
+        self.verify_ssl = verify_ssl
 
-        part = (f"-{self.host_parts.get(self.api_env)}"
-                if self.host_parts.get(self.api_env) else "")
+    def __get_api_env_host(self, api_env):
+        old_host_parts = {
+            "prod": "",
+            "pod": "tx-us-east-2a",
+            "qa": "qa0",
+            "dev": "dev0",
+            "staging": "staging0"
+        }
 
-        return f"https://api{part}.threatx.io"
+        if api_env in old_host_parts:
+            part = (f"-{old_host_parts.get(api_env)}"
+                    if old_host_parts.get(api_env) else "")
+            return f"https://api{part}.threatx.io"
+
+        return f"https://{api_env}.threatx.io"
 
     def __generate_api_link(self, api_ver: int):
         return f"/{self.api_path}/v{api_ver}"
@@ -108,7 +105,9 @@ class Client:
 
         async with aiohttp.ClientSession(
                 base_url=self.base_url, headers=self.headers,
-                connector=aiohttp.TCPConnector(force_close=True, enable_cleanup_closed=True)
+                connector=aiohttp.TCPConnector(
+                    force_close=True, enable_cleanup_closed=True, verify_ssl=self.verify_ssl
+                )
         ) as session:
             responses = await asyncio.gather(*(
                 self.__post(
@@ -130,7 +129,9 @@ class Client:
 
         async with aiohttp.ClientSession(
                 base_url=self.base_url, headers=self.headers,
-                connector=aiohttp.TCPConnector(force_close=True, enable_cleanup_closed=True)
+                connector=aiohttp.TCPConnector(
+                    force_close=True, enable_cleanup_closed=True, verify_ssl=self.verify_ssl
+                )
         ) as session:
             response = await asyncio.gather(
                 self.__post(

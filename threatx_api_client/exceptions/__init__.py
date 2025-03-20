@@ -3,11 +3,6 @@ class TXAPIError(Exception):
     pass
 
 
-class TXAPIIncorrectEnvironmentError(TXAPIError):
-    """TX API Client exception class for incorrect environment provided."""
-    pass
-
-
 class TXAPIIncorrectTokenError(TXAPIError):
     """TX API Client exception class for incorrect API token provided."""
     pass
