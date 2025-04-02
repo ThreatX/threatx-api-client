@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v1.6.4 (2025-04-02)
+
+### Bug Fixes
+
+- Backward compatibility
+  ([`baade37`](https://github.com/ThreatX/threatx-api-client/commit/baade3701140804ca165ecb18ae4cd8749a25242))
+
+- Compatibility
+  ([`eb5faa2`](https://github.com/ThreatX/threatx-api-client/commit/eb5faa21c58fe16611e28c64b1d7f7e039ae0c67))
+
+
 ## v1.6.3 (2025-03-13)
 
 ### Bug Fixes
