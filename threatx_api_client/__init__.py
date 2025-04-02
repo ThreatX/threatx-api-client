@@ -22,10 +22,11 @@ class Client:
         if not api_key:
             raise TXAPIIncorrectTokenError("Please provide TX API Key.")
 
-        self.base_url = self.__get_api_env_host(api_env)
-
         self.api_path = "tx_api"
+        self.api_env = api_env
         self.api_key = api_key
+
+        self.base_url = self.__get_api_env_host(self.api_env)
 
         self.headers = {
             "User-Agent": f"ThreatX-API-Client/{importlib.metadata.version('threatx_api_client')}"
